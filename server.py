@@ -27,14 +27,13 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
-        if self.path == "/recipes":
+        elif self.path == "/recipes":
             self.handleCreateRecipe()
+        elif self.path == "/recipes/ingredients":
+            self.handleAddRecipeIngredient()
     def do_PUT(self):
-        pathParams = self.path.split('/')
-        if len(pathParams) >= 4:
-            if pathParams[1] == "recipes" and pathParams[2] == "ingredients":
-                recipeID = pathParams[3]
-                self.handleAddRecipeIngredient(recipeID)
+        if self.path == "/recipes/ingredients":
+            self.handleUpdateRecipeIngredient()
     def do_DELETE(self):
         pass
 
@@ -100,12 +99,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(jsonData, "utf-8"))
 
 # recipe_ingredients operations
-    def handleAddRecipeIngredient(self, recipeID):
+    def handleAddRecipeIngredient(self):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
         ingredientID = -1
+        recipeID = -1
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
+        if parsedBody.get("recipe_id") != None:
+            recipeID = parsedBody["recipe_id"][0]
         if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
             self.handle404("Ingredient or recipe does not exist.")
         elif db.recipeIngredientExists(recipeID, ingredientID):
@@ -123,6 +125,30 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
 
+    def handleUpdateRecipeIngredient(self):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        ingredientID = -1
+        recipeID = -1
+        if parsedBody.get("ingredient_id") != None:
+            ingredientID = parsedBody["ingredient_id"][0]
+        if parsedBody.get("recipe_id") != None:
+            recipeID = parsedBody["recipe_id"][0]
+        if not db.recipeIngredientExists(recipeID, ingredientID):
+            self.handle404("Recipe ingredient does not exist.")
+        else:
+            recipeIngredient = db.getRecipeIngredient(recipeID, ingredientID)
+            quantity = recipeIngredient["quantity"]
+            quantityType = recipeIngredient["quantity_type"]
+            if parsedBody.get("quantity") != None:
+                quantity = parsedBody["quantity"][0]
+            if parsedBody.get("quantity_type") != None:
+                quantityType = parsedBody["quantity_type"][0]
+            db.updateRecipeIngredient(recipeID, ingredientID, quantity, quantityType)
+            self.send_response(201)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Recipe ingredient updated.", "utf-8"))
 # General Methods
     def getParsedBody(self):
         length = int(self.headers["Content-length"])

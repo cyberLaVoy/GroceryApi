@@ -21,31 +21,28 @@
 ```SQL
 CREATE TABLE IF NOT EXISTS ingredients
 (ingredient_id serial primary key,
- label VARCHAR(255) not null,
- category VARCHAR(255));
-
-CREATE TABLE IF NOT EXISTS recipe_ingredients
-(foreign_recipe_id INTEGER not null,
- foreign_ingredient_id INTEGER not null,
- quantity REAL,
- quantity_type INTEGER,
- primary key (foreign_recipe_id, foreign_ingredient_id));
+label VARCHAR(255) not null,
+category VARCHAR(255));
 
 CREATE TABLE IF NOT EXISTS recipes
 (recipe_id serial primary key,
- label VARCHAR(255),
- foreign_recipe_id INTEGER,
- foreign_ingredient_id INTEGER,
- foreign key (foreign_recipe_id, foreign_ingredient_id) references recipe_ingredients(foreign_recipe_id, foreign_ingredient_id) on update cascade,
- instructions VARCHAR(255));
+label VARCHAR(255),
+instructions VARCHAR(255));
+
+CREATE TABLE IF NOT EXISTS recipe_ingredients
+(recipe_id INTEGER not null,
+ingredient_id INTEGER not null,
+quantity REAL,
+quantity_type VARCHAR(255),
+primary key (recipe_id, ingredient_id));
 
 CREATE TABLE IF NOT EXISTS grocery_list
 (list_id int,
- ingredient_id INTEGER references ingredients(ingredient_id),
- recipe_id INTEGER references recipes(recipe_id),
- quantity REAL,
- quantity_type VARCHAR(255),
- grabbed BOOLEAN);
+ingredient_id INTEGER references ingredients(ingredient_id),
+recipe_id INTEGER references recipes(recipe_id),
+quantity REAL,
+quantity_type VARCHAR(255),
+grabbed BOOLEAN);
 ```
 
 ## REST Endpoints:
@@ -60,8 +57,10 @@ Retrieve | GET | /groceries/listID
 Create | POST | /recipes
 Create | POST | /ingredients
 Create | POST | /groceries
+Create | POST | /recipes/ingredients
 Replace | PUT | /ingredients/ingredientID
 Replace | PUT | /recipes/recipeID
+Replace | PUT | /recipes/ingredients
 Replace | PUT | /groceries/listID
 Delete | DELETE | /ingredients/ingredientID
 Delete | DELETE | /recipes/recipeID

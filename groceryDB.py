@@ -65,7 +65,7 @@ class GroceryDB:
         self.cursor.execute(Query, (ingredientID,))
         item = self.cursor.fetchall()
         return item
-    def replaceIngredient(self, label, category, ingredientID):
+    def updateIngredient(self, label, category, ingredientID):
         Query = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
         self.cursor.execute(Query,(label, category, ingredientID))
         self.connection.commit()
@@ -92,11 +92,28 @@ class GroceryDB:
         queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
         self.cursor.execute(queryString, (recipeID, ingredientID, quantity, quantityType))
         self.connection.commit()
+    def getRecipeIngredient(self, recipeID, ingredientID):
+        queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s AND ingredient_id = %s"
+        self.cursor.execute(queryString,(recipeID,ingredientID))
+        rows = self.cursor.fetchall()
+        return rows
     def getRecipeIngredients(self, recipeID):
         queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s"
         self.cursor.execute(queryString,(recipeID,))
         rows = self.cursor.fetchall()
         return rows
+    def updateRecipeIngredient(self, recipeID, ingredientID, quantity, quantityType):
+        Query = "UPDATE recipe_ingredients SET quantity = %s, quantity_type = %s WHERE recipe_id = %s AND ingredient_id = %s"
+        self.cursor.execute(Query,(quantity, quantityType, recipeID, ingredientID))
+        self.connection.commit()
+    def deleteRecipeIngredient(self, recipeID, ingredientID):
+        Query = "DELETE FROM recipe_ingredients WHERE recipe_id = %s AND ingredient_id = %s"
+        self.cursor.execute(Query, (recipeID, ingredientID))
+        self.connection.commit()
+    def deleteRecipeIngredients(self, recipeID):
+        Query = "DELETE FROM recipe_ingredients WHERE recipe_id = %s"
+        self.cursor.execute(Query, (recipeID,))
+        self.connection.commit()
 # recipes operations
     def appendIngredientsToRecipesList(self, recipies):
         for recipe in recipies:
@@ -127,11 +144,12 @@ class GroceryDB:
         recipe = self.cursor.fetchall()
         self.appendIngredientsToRecipesList(recipe)
         return recipe
-    def replaceRecipe(self, label, category, ingredientID):
-        Query = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
-        self.cursor.execute(Query,(label, category, ingredientID))
+    def updateRecipe(self, label, directions, recipeID):
+        Query = "UPDATE recipes SET label = %s, directions = %s WHERE recipe_id = %s"
+        self.cursor.execute(Query, (label, directions, recipeID))
         self.connection.commit()
-    def deleteRecipe(self, ingredientID):
-        Query = "DELETE FROM ingredients WHERE ingredient_id = %s"
-        self.cursor.execute(Query, (ingredientID,))
+    def deleteRecipe(self, recipeID):
+        Query = "DELETE FROM recipes WHERE recipe_id = %s"
+        self.cursor.execute(Query, (recipeID,))
         self.connection.commit()
+        self.deleteRecipeIngredients(recipeID)
