@@ -43,7 +43,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def handleListIngredients(self):
         db = GroceryDB()
-        ingredients = db.getIngredients()
+        ingredients = { "ingredient" : db.getIngredients() }
+
         jsonData = json.dumps(ingredients)
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
