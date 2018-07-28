@@ -46,18 +46,18 @@ grabbed BOOLEAN);
 ```
 
 ## REST Endpoints:
-Name | HTTP Method | Path
------------- | ------------- | -------------
-List | GET | /ingredients
-List | GET | /recipes
-List | GET | /groceries
-Retrieve | GET | /ingredients/ingredientID
-Retrieve | GET | /recipes/recipeID
-Retrieve | GET | /groceries/listID
-Create | POST | /recipes
-Create | POST | /ingredients
-Create | POST | /groceries
-Create | POST | /recipes/ingredients
+Name | HTTP Method | Path | Expected Body (x-www-form-urlencoded)
+------------ | ------------- | ------------- | -------------
+List | GET | /ingredients |
+List | GET | /recipes |
+List | GET | /groceries |
+Retrieve | GET | /ingredients/ingredientID |
+Retrieve | GET | /recipes/recipeID |
+Retrieve | GET | /groceries/listID |
+Create | POST | /recipes | label, directions
+Create | POST | /ingredients | label, category
+Create | POST | /groceries |
+Create | POST | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
 Replace | PUT | /ingredients/ingredientID
 Replace | PUT | /recipes/recipeID
 Replace | PUT | /recipes/ingredients

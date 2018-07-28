@@ -92,7 +92,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             label = parsedBody["label"][0]
         if parsedBody.get("category") != None:
             category = parsedBody["category"][0]
-        db.updateIngredient(ingredientID, label, category)
+        db.updateIngredient(label, category, ingredientID)
         self.handle201("Ingredient updated.")
     def handleDeleteIngredient(self, ingredientID):
         db = GroceryDB()
