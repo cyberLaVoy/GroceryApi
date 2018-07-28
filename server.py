@@ -37,7 +37,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == "/recipes/ingredients":
             self.handleUpdateRecipeIngredient()
         elif len(pathParams) >= 3:
-            if pathParams[1] == "recipe":
+            if pathParams[1] == "recipes":
                 recipeID = pathParams[2]
                 self.handleUpdateRecipe(recipeID)
 
