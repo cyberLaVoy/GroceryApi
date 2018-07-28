@@ -70,10 +70,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if parsedBody.get("category") != None:
             category = parsedBody["category"][0]
         db.createIngredient(label, category)
-        self.send_response(201)
-        self.send_header("Content-Type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Ingredient created.", "utf-8"))
+        self.handle201("Ingredient created.")
     def handleListIngredients(self):
         db = GroceryDB()
         ingredients = { "ingredients" : db.getIngredients() }
@@ -96,10 +93,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if parsedBody.get("category") != None:
             category = parsedBody["category"][0]
         db.updateIngredient(ingredientID, label, category)
-        self.send_response(201)
-        self.send_header("Content-Type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Ingredient updated.", "utf-8"))
+        self.handle201("Ingredient updated.")
     def handleDeleteIngredient(self, ingredientID):
         db = GroceryDB()
         if not db.ingredientExists(ingredientID):
