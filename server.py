@@ -82,13 +82,13 @@ class RequestHandler(BaseHTTPRequestHandler):
             ingredientID = parsedBody["ingredient_id"][0]
         if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
             self.handle404("Ingredient or recipe does not exist.")
-        quanity = ""
+        quantity = ""
         quantityType = ""
-        if parsedBody.get("quanity") != None:
-            quanity = parsedBody["quanity"][0]
+        if parsedBody.get("quantity") != None:
+            quantity = parsedBody["quantity"][0]
         if parsedBody.get("quantity_type") != None:
-            quantityType = parsedBody["quanity_type"][0]
-        db.addIngredientToRecipe(recipeID, ingredientID, quanity, quantityType)
+            quantityType = parsedBody["quantity_type"][0]
+        db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
         self.send_response(201)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
