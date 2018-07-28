@@ -39,7 +39,7 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS recipes
         (recipe_id serial primary key,
         label VARCHAR(255),
-        ingredients INTEGER references recipe_ingredients(recipe_id, ingedient_id),
+        ingredients INTEGER references recipe_ingredients(recipe_id, ingredient_id),
         instructions VARCHAR(255));
 
         CREATE TABLE IF NOT EXISTS grocery_list
