@@ -107,7 +107,8 @@ class GroceryDB:
         self.cursor.execute(queryString)
         rows = self.cursor.fetchall()
         for row in rows:
-            row["ingredients"] = self.getRecipeIngredients(row["recipe_id"])
+            ingredients = self.getRecipeIngredients(row["recipe_id"]).pop("recipe_id", None)
+            row["ingredients"]  = ingredients
         return rows 
     def getRecipe(self, ingredientID):
         Query = "SELECT * FROM recipes WHERE recipe_id = %s"
