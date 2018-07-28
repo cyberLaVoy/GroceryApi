@@ -39,8 +39,8 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS recipes
         (recipe_id serial primary key,
         label VARCHAR(255),
-        foreign_recipe_id INTEGER;
-        foreign_ingredient_id INTEGER;
+        foreign_recipe_id INTEGER,
+        foreign_ingredient_id INTEGER,
         foreign key (foreign_recipe_id, foreign_ingredient_id) references recipe_ingredients(foreign_recipe_id, foreign_ingredient_id) on update cascade,
         instructions VARCHAR(255));
 
