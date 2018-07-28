@@ -81,6 +81,13 @@ class GroceryDB:
             return False
         return True
 # recipe_indgredients operations
+    def recipeIngredientExists(self, recipeID, ingredientID):
+        queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s, ingredient_id = %s"
+        self.cursor.execute(queryString,(recipeID, ingredientID))
+        rows = self.cursor.fetchall()
+        if len(rows) == 0:
+            return False
+        return True
     def addIngredientToRecipe(self, recipeID, ingredientID, quantity, quantityType):
         queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
         self.cursor.execute(queryString, (recipeID, ingredientID, quantity, quantityType))

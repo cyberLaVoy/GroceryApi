@@ -82,6 +82,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             ingredientID = parsedBody["ingredient_id"][0]
         if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
             self.handle404("Ingredient or recipe does not exist.")
+        elif db.recipeIngredientExists(recipeID, ingredientID):
+            self.handle422("Recipe ingredient already exists.")
         else:
             quantity = ""
             quantityType = ""
