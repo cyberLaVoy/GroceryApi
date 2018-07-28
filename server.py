@@ -83,6 +83,9 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 
 def main():
+    db = GroceryDB()
+    db.createTables()
+
     port = 8080
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
