@@ -81,9 +81,9 @@ class GroceryDB:
             return False
         return True
 # recipe_indgredients operations
-    def addIngredientToRecipe(self, recipeID, ingredientID, quanity, quantityType):
-        queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quanity, quantity_type) VALUES (%s, %s, %s, %s)"
-        self.cursor.execute(queryString, (recipeID, ingredientID, quanity, quantityType))
+    def addIngredientToRecipe(self, recipeID, ingredientID, quantity, quantityType):
+        queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
+        self.cursor.execute(queryString, (recipeID, ingredientID, quantity, quantityType))
         self.connection.commit()
 # recipes operations
     def recipeExists(self, recipeID):
