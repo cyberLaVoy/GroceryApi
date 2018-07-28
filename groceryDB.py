@@ -80,6 +80,11 @@ class GroceryDB:
         if len(rows) == 0:
             return False
         return True
+# recipe_indgredients operations
+    def addIngredientToRecipe(self, recipeID, ingredientID, quanity, quantityType):
+        queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quanity, quantity_type) VALUES (%s, %s, %s, %s)"
+        self.cursor.execute(queryString, (recipeID, ingredientID, quanity, quantityType))
+        self.connection.commit()
 # recipes operations
     def recipeExists(self, recipeID):
         queryString = "SELECT * FROM recipes WHERE recipe_id = %s"
@@ -91,10 +96,6 @@ class GroceryDB:
     def createRecipe(self, label, instructions):
         queryString = "INSERT INTO recipes (label, instructions) VALUES (%s, %s)"
         self.cursor.execute(queryString, (label, instructions))
-        self.connection.commit()
-    def addIngredientToRecipe(self, recipeID, ingredientID, quanity, quantityType):
-        queryString = "INSERT INTO recipes (recipe_id, ingredient_id, quanity, quantity_type) VALUES (%s, %s, %s, %s)"
-        self.cursor.execute(queryString, (recipeID, ingredientID, quanity, quantityType))
         self.connection.commit()
     def getRecipes(self):
         queryString = "SELECT * FROM recipes"
