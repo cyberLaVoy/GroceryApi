@@ -74,6 +74,7 @@ class GroceryDB:
         self.cursor.execute(Query, (ingredientID,))
         self.connection.commit()
     def ingredientExists(self, ingredientID):
+        ingredientID = str(ingredientID)
         queryString = "SELECT * FROM ingredients WHERE ingredient_id = %s"
         self.cursor.execute(queryString,(ingredientID,))
         rows = self.cursor.fetchall()

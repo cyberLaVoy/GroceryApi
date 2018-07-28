@@ -58,6 +58,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes(jsonData, "utf-8"))
 
+# recipe operations
     def handleCreateRecipe(self):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
@@ -71,7 +72,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_response(201)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
-        self.wfile.write(bytes("Ingredient created.", "utf-8"))
+        self.wfile.write(bytes("Recipe created.", "utf-8"))
 
     def handleAddRecipeIngredient(self, recipeID):
         db = GroceryDB()
