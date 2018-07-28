@@ -82,17 +82,18 @@ class RequestHandler(BaseHTTPRequestHandler):
             ingredientID = parsedBody["ingredient_id"][0]
         if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
             self.handle404("Ingredient or recipe does not exist.")
-        quantity = ""
-        quantityType = ""
-        if parsedBody.get("quantity") != None:
-            quantity = parsedBody["quantity"][0]
-        if parsedBody.get("quantity_type") != None:
-            quantityType = parsedBody["quantity_type"][0]
-        db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
-        self.send_response(201)
-        self.send_header("Content-Type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
+        else:
+            quantity = ""
+            quantityType = ""
+            if parsedBody.get("quantity") != None:
+                quantity = parsedBody["quantity"][0]
+            if parsedBody.get("quantity_type") != None:
+                quantityType = parsedBody["quantity_type"][0]
+            db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
+            self.send_response(201)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
 
     def handleListRecipes(self):
         db = GroceryDB()
