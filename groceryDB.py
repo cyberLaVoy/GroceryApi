@@ -82,7 +82,7 @@ class GroceryDB:
         return True
 # recipe_indgredients operations
     def recipeIngredientExists(self, recipeID, ingredientID):
-        queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s, ingredient_id = %s"
+        queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s AND ingredient_id = %s"
         self.cursor.execute(queryString,(recipeID, ingredientID))
         rows = self.cursor.fetchall()
         if len(rows) == 0:
