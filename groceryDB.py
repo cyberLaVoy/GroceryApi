@@ -120,6 +120,9 @@ class GroceryDB:
             ingredients = self.getRecipeIngredients(recipe["recipe_id"])
             for ingredient in ingredients:
                 ingredient.pop("recipe_id", None)
+                ingredientDetails = self.getIngredient(ingredient["ingredient_id"])
+                ingredient["label"] = ingredientDetails["label"]
+                ingredient["category"] = ingredientDetails["category"]
             recipe["ingredients"]  = ingredients
     def recipeExists(self, recipeID):
         queryString = "SELECT * FROM recipes WHERE recipe_id = %s"

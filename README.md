@@ -10,7 +10,7 @@
 #### recipes
 ##### Attributes:
 * label (a name for recipe)
-* ingredients (a list of ingredients)
+* ingredients (a list of ingredients, with quantity and quantity type)
 * instructions (directions to make recipe)
 
 #### grocery_list
@@ -46,7 +46,7 @@ grabbed BOOLEAN);
 ```
 
 ## REST Endpoints:
-Name | HTTP Method | Path | Expected Body (x-www-form-urlencoded)
+Name | HTTP Method | Path | Request Body (x-www-form-urlencoded)
 ------------ | ------------- | ------------- | -------------
 List | GET | /ingredients |
 List | GET | /recipes |
@@ -58,14 +58,14 @@ Create | POST | /recipes | label, directions
 Create | POST | /ingredients | label, category
 Create | POST | /groceries |
 Create | POST | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
-Replace | PUT | /ingredients/ingredientID
-Replace | PUT | /recipes/recipeID
-Replace | PUT | /recipes/ingredients
-Replace | PUT | /groceries/listID
-Delete | DELETE | /recipes/ingredients
-Delete | DELETE | /ingredients/ingredientID
-Delete | DELETE | /recipes/recipeID
-Delete | DELETE | /groceries/listID
+Replace | PUT | /ingredients/ingredientID | label, category
+Replace | PUT | /recipes/recipeID | label, instructions
+Replace | PUT | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
+Replace | PUT | /groceries/listID |
+Delete | DELETE | /recipes/ingredients | recipe_id, ingredient_id
+Delete | DELETE | /ingredients/ingredientID | 
+Delete | DELETE | /recipes/recipeID |
+Delete | DELETE | /groceries/listID |
 
 ## Heroku URL
 #### https://stormy-everglades-69504.herokuapp.com/ 
