@@ -98,6 +98,12 @@ class GroceryDB:
         rows = self.cursor.fetchall()
         return rows
 # recipes operations
+    def appendIngredientsToRecipesObject(self, recipies):
+        for recipe in recipies:
+            ingredients = self.getRecipeIngredients(recipe["recipe_id"])
+            for ingredient in ingredients:
+                ingredient.pop("recipe_id", None)
+            recipe["ingredients"]  = ingredients
     def recipeExists(self, recipeID):
         queryString = "SELECT * FROM recipes WHERE recipe_id = %s"
         self.cursor.execute(queryString, (recipeID,))
@@ -112,13 +118,9 @@ class GroceryDB:
     def getRecipes(self):
         queryString = "SELECT * FROM recipes"
         self.cursor.execute(queryString)
-        rows = self.cursor.fetchall()
-        for row in rows:
-            ingredients = self.getRecipeIngredients(row["recipe_id"])
-            for ingredient in ingredients:
-                ingredient.pop("recipe_id", None)
-            row["ingredients"]  = ingredients
-        return rows 
+        recipes = self.cursor.fetchall()
+        self.appendIngredientsToRecipesObject(recipes)
+        return recipes
     def getRecipe(self, ingredientID):
         Query = "SELECT * FROM recipes WHERE recipe_id = %s"
         self.cursor.execute(Query, (ingredientID,))
