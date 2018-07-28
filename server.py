@@ -44,7 +44,50 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handleListIngredients(self):
         db = GroceryDB()
         ingredients = { "ingredients" : db.getIngredients() }
+        jsonData = json.dumps(ingredients)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(bytes(jsonData, "utf-8"))
 
+    def handleCreateRecipe(self):
+        parsedBody = self.getParsedBody()
+        db = GroceryDB()
+        label = "Recipe Label"
+        directions = ""
+        if parsedBody.get("label") != None:
+            label = parsedBody["label"][0]
+        if parsedBody.get("directions") != None:
+            directions = parsedBody["directions"][0]
+        db.createRecipe(label, directions)
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes("Ingredient created.", "utf-8"))
+
+    def handleAddRecipeIngredient(self, recipeID):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        ingredientID = ""
+        if parsedBody.get("ingredient_id") != None:
+            ingredientID = parsedBody["ingredient_id"][0]
+        if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
+            self.handle404("Ingredient or recipe does not exist.")
+        quanity = ""
+        quantityType = ""
+        if parsedBody.get("quanity") != None:
+            quanity = parsedBody["quanity"][0]
+        if parsedBody.get("quantity_type") != None:
+            quantityType = parsedBody["quanity_type"][0]
+        db.addIngredientToRecipe(recipeID, ingredientID, quanity, quantityType)
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
+
+    def handleListRecipes(self):
+        db = GroceryDB()
+        ingredients = { "ingredients" : db.getIngredients() }
         jsonData = json.dumps(ingredients)
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
@@ -58,17 +101,17 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsed_body = parse_qs(body)
         return parsed_body
 
-    def handle404(self):
+    def handle404(self, message):
         self.send_response(404)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
-        self.wfile.write(bytes("Not Found.", "utf-8"))
+        self.wfile.write(bytes(message, "utf-8"))
 
-    def handle422(self):
+    def handle422(self, message):
         self.send_response(422)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
-        self.wfile.write(bytes("Invalid data entry.", "utf-8"))
+        self.wfile.write(bytes(message, "utf-8"))
 
     def handle401(self):
         self.send_response(401)

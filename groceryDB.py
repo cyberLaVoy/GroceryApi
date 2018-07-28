@@ -27,19 +27,17 @@ class GroceryDB:
         label VARCHAR(255) not null,
         category VARCHAR(255));
 
-        CREATE TABLE IF NOT EXISTS recipe_ingredients
-        (foreign_recipe_id INTEGER not null,
-        foreign_ingredient_id INTEGER not null,
-        quantity REAL,
-        quantity_type INTEGER,
-        primary key (foreign_recipe_id, foreign_ingredient_id));
-
         CREATE TABLE IF NOT EXISTS recipes
         (recipe_id serial primary key,
         label VARCHAR(255),
-        foreign_ingredient_id INTEGER,
-        foreign key (recipe_id, foreign_ingredient_id) references recipe_ingredients (recipe_id, foreign_ingredient_id) on update cascade,
         instructions VARCHAR(255));
+
+        CREATE TABLE IF NOT EXISTS recipe_ingredients
+        (recipe_id INTEGER not null,
+        ingredient_id INTEGER not null,
+        quantity REAL,
+        quantity_type INTEGER,
+        primary key (foreign_recipe_id, foreign_ingredient_id));
 
         CREATE TABLE IF NOT EXISTS grocery_list
         (list_id int,
@@ -75,13 +73,29 @@ class GroceryDB:
         Query = "DELETE FROM ingredients WHERE ingredient_id = %s"
         self.cursor.execute(Query, (ingredientID,))
         self.connection.commit()
+    def ingredientExists(self, ingredientID):
+        queryString = "SELECT * FROM ingredients WHERE ingredient_id = %s"
+        self.cursor.execute(queryString,(ingredientID,))
+        rows = self.cursor.fetchall()
+        if len(rows) == 0:
+            return False
+        return True
 # recipes operations
-    def createRecipe(self, label, ingredients, instructions):
+    def recipeExists(self, recipeID):
+        queryString = "SELECT * FROM recipes WHERE recipe_id = %s"
+        self.cursor.execute(queryString, (recipeID,))
+        rows = self.cursor.fetchall()
+        if len(rows) == 0:
+            return False
+        return True
+    def createRecipe(self, label, instructions):
         queryString = "INSERT INTO recipes (label, instructions) VALUES (%s, %s)"
         self.cursor.execute(queryString, (label, instructions))
         self.connection.commit()
     def addIngredientToRecipe(self, recipeID, ingredientID, quanity, quantityType):
-        pass
+        queryString = "INSERT INTO recipes (recipe_id, ingredient_id, quanity, quantity_type) VALUES (%s, %s, %s, %s)"
+        self.cursor.execute(queryString, (recipeID, ingredientID, quanity, quantityType))
+        self.connection.commit()
     def getRecipes(self):
         queryString = "SELECT * FROM recipes"
         self.cursor.execute(queryString)
