@@ -89,12 +89,15 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def handleRecipeRetrieve(self, recipeID):
         db = GroceryDB()
-        recipe = { "recipe" : db.getRecipe(recipeID) }
-        jsonData = json.dumps(recipe)
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(bytes(jsonData, "utf-8"))
+        if not db.recipeExists(recipeID):
+            self.handle404("Recipe does not exist.")
+        else:
+            recipe = db.getRecipe(recipeID)[0]
+            jsonData = json.dumps(recipe)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(bytes(jsonData, "utf-8"))
 
 # recipe_ingredients operations
     def handleAddRecipeIngredient(self, recipeID):
