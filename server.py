@@ -91,7 +91,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not db.recipeExists(recipeID):
             self.handle404("Recipe does not exist.")
         else:
-            recipe = db.getRecipe(recipeID)[0]
+            recipe = db.getRecipe(recipeID)
             jsonData = json.dumps(recipe)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
