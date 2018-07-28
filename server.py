@@ -73,12 +73,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
         label = "Recipe Label"
-        directions = ""
+        instructions = ""
         if parsedBody.get("label") != None:
             label = parsedBody["label"][0]
-        if parsedBody.get("directions") != None:
-            directions = parsedBody["directions"][0]
-        db.createRecipe(label, directions)
+        if parsedBody.get("instructions") != None:
+            instructions = parsedBody["instructions"][0]
+        db.createRecipe(label, instructions)
         self.send_response(201)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
@@ -89,12 +89,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         db = GroceryDB()
         recipe = db.getRecipe(recipeID)
         label = recipe["label"]
-        directions = recipe["directions"]
+        instructions = recipe["instructions"]
         if parsedBody.get("label") != None:
             label = parsedBody["label"][0]
-        if parsedBody.get("directions") != None:
-            directions = parsedBody["directions"][0]
-        db.updateRecipe(recipeID, label, directions)
+        if parsedBody.get("instructions") != None:
+            instructions = parsedBody["instructions"][0]
+        db.updateRecipe(recipeID, label, instructions)
         self.send_response(201)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
