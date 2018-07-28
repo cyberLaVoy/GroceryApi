@@ -144,7 +144,7 @@ class GroceryDB:
         recipe = self.cursor.fetchall()
         self.appendIngredientsToRecipesList(recipe)
         return recipe[0]
-    def updateRecipe(self, label, directions, recipeID):
+    def updateRecipe(self, recipeID, label, directions):
         Query = "UPDATE recipes SET label = %s, directions = %s WHERE recipe_id = %s"
         self.cursor.execute(Query, (label, directions, recipeID))
         self.connection.commit()

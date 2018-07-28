@@ -22,8 +22,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif self.path == "/recipes":
             self.handleListRecipes()
         elif len(pathParams) >= 3:
-            recipeID = pathParams[2]
-            self.handleRecipeRetrieve(recipeID)
+            if pathParams[1] == "recipes":
+                recipeID = pathParams[2]
+                self.handleRecipeRetrieve(recipeID)
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
@@ -32,11 +33,18 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif self.path == "/recipes/ingredients":
             self.handleAddRecipeIngredient()
     def do_PUT(self):
+        pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
             self.handleUpdateRecipeIngredient()
+        elif len(pathParams) >= 3:
+            if pathParams[1] == "recipe":
+                recipeID = pathParams[2]
+                self.handleUpdateRecipe(recipeID)
+
     def do_DELETE(self):
         pass
 
+# ingredient operations
     def handleCreateIngredient(self):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
@@ -51,7 +59,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes("Ingredient created.", "utf-8"))
-
     def handleListIngredients(self):
         db = GroceryDB()
         ingredients = { "ingredients" : db.getIngredients() }
@@ -76,6 +83,22 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes("Recipe created.", "utf-8"))
+
+    def handleUpdateRecipe(self, recipeID):
+        parsedBody = self.getParsedBody()
+        db = GroceryDB()
+        recipe = db.getRecipe()
+        label = recipe["label"]
+        directions = recipe["directions"]
+        if parsedBody.get("label") != None:
+            label = parsedBody["label"][0]
+        if parsedBody.get("directions") != None:
+            directions = parsedBody["directions"][0]
+        db.updateRecipe(recipeID, label, directions)
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes("Recipe updated.", "utf-8"))
 
     def handleListRecipes(self):
         db = GroceryDB()
@@ -155,25 +178,21 @@ class RequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(length).decode("utf-8")
         parsed_body = parse_qs(body)
         return parsed_body
-
     def handle404(self, message):
         self.send_response(404)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes(message, "utf-8"))
-
     def handle422(self, message):
         self.send_response(422)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes(message, "utf-8"))
-
     def handle401(self):
         self.send_response(401)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes("This request requires user authetication.", "utf-8"))
-
     def handle403(self):
         self.send_response(403)
         self.send_header("Content-Type", "text/plain")
