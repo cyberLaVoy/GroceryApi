@@ -75,7 +75,7 @@ class GroceryDB:
         self.connection.commit()
     def ingredientExists(self, ingredientID):
         queryString = "SELECT * FROM ingredients WHERE ingredient_id = %s"
-        self.cursor.execute(queryString,(str(ingredientID),))
+        self.cursor.execute(queryString,(ingredientID,))
         rows = self.cursor.fetchall()
         if len(rows) == 0:
             return False
@@ -83,7 +83,7 @@ class GroceryDB:
 # recipes operations
     def recipeExists(self, recipeID):
         queryString = "SELECT * FROM recipes WHERE recipe_id = %s"
-        self.cursor.execute(queryString, (str(recipeID),))
+        self.cursor.execute(queryString, (recipeID,))
         rows = self.cursor.fetchall()
         if len(rows) == 0:
             return False

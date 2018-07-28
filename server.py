@@ -77,7 +77,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handleAddRecipeIngredient(self, recipeID):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
-        ingredientID = ""
+        ingredientID = -1
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if not db.ingredientExists(ingredientID) or not db.recipeExists(recipeID):
