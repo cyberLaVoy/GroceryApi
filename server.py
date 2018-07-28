@@ -21,8 +21,14 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
+        if self.path == "/recipes":
+            self.handleCreateRecipe()
     def do_PUT(self):
-        pass
+        pathParams = self.path.split('/')
+        if len(pathParams) >= 4:
+            if pathParams[1] == "recipes" and pathParams[2] == "ingredients":
+                recipeID = pathParams[3]
+                self.handleAddRecipeIngredient(recipeID)
     def do_DELETE(self):
         pass
 
