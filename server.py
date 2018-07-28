@@ -87,7 +87,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handleUpdateRecipe(self, recipeID):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
-        recipe = db.getRecipe()
+        recipe = db.getRecipe(recipeID)
         label = recipe["label"]
         directions = recipe["directions"]
         if parsedBody.get("label") != None:
