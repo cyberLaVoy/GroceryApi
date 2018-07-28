@@ -18,6 +18,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/ingredients":
             self.handleListIngredients()
+        elif self.path == "/recipes":
+            self.handleListRecipes()
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
@@ -49,6 +51,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def handleListIngredients(self):
         db = GroceryDB()
+        print(db.getIngredients())
         ingredients = { "ingredients" : db.getIngredients() }
         jsonData = json.dumps(ingredients)
         self.send_response(200)
