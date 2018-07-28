@@ -2,18 +2,18 @@
 
 ## Resources:
 
-#### ingredients
+### Ingredients
 ##### Attributes:
 * label (a name for ingredient)
 * category (the category of ingredient)
 
-#### recipes
+### Recipes
 ##### Attributes:
 * label (a name for recipe)
 * ingredients (a list of ingredients, with quantity and quantity type)
 * instructions (directions to make recipe)
 
-#### grocery_list
+### Grocery List
 ##### Attributes:
 * items
 
