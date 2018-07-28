@@ -36,7 +36,7 @@ class GroceryDB:
         (recipe_id INTEGER not null,
         ingredient_id INTEGER not null,
         quantity REAL,
-        quantity_type INTEGER,
+        quantity_type VARCHAR(255),
         primary key (recipe_id, ingredient_id));
 
         CREATE TABLE IF NOT EXISTS grocery_list
