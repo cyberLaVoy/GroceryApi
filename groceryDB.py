@@ -85,6 +85,11 @@ class GroceryDB:
         queryString = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
         self.cursor.execute(queryString, (recipeID, ingredientID, quantity, quantityType))
         self.connection.commit()
+    def getRecipeIngredients(self, recipeID):
+        queryString = "SELECT * FROM recipe_ingredients WHERE recipe_id = %s"
+        self.cursor.execute(queryString,(recipeID,))
+        rows = self.cursor.fetchall()
+        return rows
 # recipes operations
     def recipeExists(self, recipeID):
         queryString = "SELECT * FROM recipes WHERE recipe_id = %s"
@@ -101,6 +106,8 @@ class GroceryDB:
         queryString = "SELECT * FROM recipes"
         self.cursor.execute(queryString)
         rows = self.cursor.fetchall()
+        for row in rows:
+            row["ingredients"] = self.getRecipeIngredients(row["recipe_id"])
         return rows 
     def getRecipe(self, ingredientID):
         Query = "SELECT * FROM recipes WHERE recipe_id = %s"
