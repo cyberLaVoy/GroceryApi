@@ -19,25 +19,25 @@
 
 ## Database Schema:
 ```SQL
-CREATE TABLE ingredients
-(ingredient_id INTEGER primary key
+CREATE TABLE IF NOT EXISTS ingredients
+(ingredient_id serial primary key
  label VARCHAR(255) not null,
  catagory VARCHAR(255));
 
-CREATE TABLE recipes
-(recipe_id INTEGER primary key,
+CREATE TABLE IF NOT EXISTS recipes
+(recipe_id serial primary key,
  label VARCHAR(255),
  ingredients INTEGER references recipe_ingredients(recipe_id, ingedient_id),
  instructions VARCHAR(255));
 
-CREATE TABLE recipe_ingredients
+CREATE TABLE IF NOT EXISTS recipe_ingredients
 (recipe_id INTEGER not null,
  ingredient_id INTEGER not null,
  quantity REAL,
  quantity_type INTEGER,
  primary key (recipe_id, ingredient_id));
 
-CREATE TABLE grocery_list
+CREATE TABLE IF NOT EXISTS grocery_list
 (list_id int,
  ingredient_id INTEGER references ingredients(ingredient_id),
  recipe_id INTEGER references recipes(recipe_id)
@@ -66,4 +66,4 @@ Delete | DELETE | /recipes/recipeID
 Delete | DELETE | /groceries/listID
 
 ## Heroku URL
-#### https://afternoon-wave-54596.herokuapp.com/
+#### https://stormy-everglades-69504.herokuapp.com/ 
