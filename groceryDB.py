@@ -29,18 +29,18 @@ class GroceryDB:
         label VARCHAR(255) not null,
         catagory VARCHAR(255));
 
-        CREATE TABLE IF NOT EXISTS recipes
-        (recipe_id serial primary key,
-        label VARCHAR(255),
-        ingredients INTEGER references recipe_ingredients(recipe_id, ingedient_id),
-        instructions VARCHAR(255));
-
         CREATE TABLE IF NOT EXISTS recipe_ingredients
         (recipe_id INTEGER not null,
         ingredient_id INTEGER not null,
         quantity REAL,
         quantity_type INTEGER,
         primary key (recipe_id, ingredient_id));
+
+        CREATE TABLE IF NOT EXISTS recipes
+        (recipe_id serial primary key,
+        label VARCHAR(255),
+        ingredients INTEGER references recipe_ingredients(recipe_id, ingedient_id),
+        instructions VARCHAR(255));
 
         CREATE TABLE IF NOT EXISTS grocery_list
         (list_id int,
