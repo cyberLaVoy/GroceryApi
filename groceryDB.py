@@ -61,13 +61,13 @@ class GroceryDB:
         rows = self.cursor.fetchall()
         return rows 
     def getIngredient(self, ingredientID):
-        Query = "SELECT * FROM ingredients WHERE ingredient_id = %s"
-        self.cursor.execute(Query, (ingredientID,))
-        item = self.cursor.fetchall()
-        return item
+        queryString = "SELECT * FROM ingredients WHERE ingredient_id = %s"
+        self.cursor.execute(queryString, (ingredientID,))
+        ingredient = self.cursor.fetchall()
+        return ingredient[0]
     def updateIngredient(self, label, category, ingredientID):
-        Query = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
-        self.cursor.execute(Query,(label, category, ingredientID))
+        queryString = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
+        self.cursor.execute(queryString,(label, category, ingredientID))
         self.connection.commit()
     def deleteIngredient(self, ingredientID):
         Query = "DELETE FROM ingredients WHERE ingredient_id = %s"

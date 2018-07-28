@@ -62,6 +62,7 @@ Replace | PUT | /ingredients/ingredientID
 Replace | PUT | /recipes/recipeID
 Replace | PUT | /recipes/ingredients
 Replace | PUT | /groceries/listID
+Delete | DELETE | /recipes/ingredients
 Delete | DELETE | /ingredients/ingredientID
 Delete | DELETE | /recipes/recipeID
 Delete | DELETE | /groceries/listID

@@ -22,7 +22,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif self.path == "/recipes":
             self.handleListRecipes()
         elif len(pathParams) >= 3:
-            if pathParams[1] == "recipes":
+            if pathParams[1] == "ingredients":
+                ingredientID = pathParams[2]
+                self.handleIngredientRetrieve(ingredientID)
+            elif pathParams[1] == "recipes":
                 recipeID = pathParams[2]
                 self.handleRecipeRetrieve(recipeID)
     def do_POST(self):
@@ -40,9 +43,21 @@ class RequestHandler(BaseHTTPRequestHandler):
             if pathParams[1] == "recipes":
                 recipeID = pathParams[2]
                 self.handleUpdateRecipe(recipeID)
+            elif pathParams[1] == "ingredients":
+                ingredientID = pathParams[2]
+                self.handleUpdateIngredient(ingredientID)
 
     def do_DELETE(self):
-        pass
+        pathParams = self.path.split('/')
+        if self.path == "/recipes/ingredients":
+            self.handleDeleteRecipeIngredient()
+        if len(pathParams) >= 3:
+            if pathParams[1] == "recipes":
+                recipeID = pathParams[2]
+                self.handleDeleteRecipe(recipeID)
+            elif pathParams[1] == "ingredients":
+                ingredientID = pathParams[2]
+                self.handleDeleteIngredient(ingredientID)
 
 # ingredient operations
     def handleCreateIngredient(self):
@@ -62,11 +77,35 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handleListIngredients(self):
         db = GroceryDB()
         ingredients = { "ingredients" : db.getIngredients() }
-        jsonData = json.dumps(ingredients)
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
+        self.handle200JSONResponse(ingredients)
+    def handleIngredientRetrieve(self, ingredientID):
+        db = GroceryDB()
+        if not db.ingredientExists(ingredientID):
+            self.handle404("Ingredient does not exist.")
+        else:
+            ingredient = db.getIngredient(ingredientID)
+            self.handle200JSONResponse(ingredient)
+    def handleUpdateIngredient(self, ingredientID):
+        parsedBody = self.getParsedBody()
+        db = GroceryDB()
+        ingredient = db.getIngredient(ingredientID)
+        label = ingredient["label"]
+        category = ingredient["category"]
+        if parsedBody.get("label") != None:
+            label = parsedBody["label"][0]
+        if parsedBody.get("category") != None:
+            category = parsedBody["category"][0]
+        db.updateIngredient(ingredientID, label, category)
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain")
         self.end_headers()
-        self.wfile.write(bytes(jsonData, "utf-8"))
+        self.wfile.write(bytes("Ingredient updated.", "utf-8"))
+    def handleDeleteIngredient(self, ingredientID):
+        db = GroceryDB()
+        if not db.ingredientExists(ingredientID):
+            self.handle404("Ingredient does not exist.")
+        db.deleteIngredient(ingredientID)
+        self.handle200("Ingredient successfully deleted")
 
 # recipe operations
     def handleCreateRecipe(self):
@@ -79,11 +118,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if parsedBody.get("instructions") != None:
             instructions = parsedBody["instructions"][0]
         db.createRecipe(label, instructions)
-        self.send_response(201)
-        self.send_header("Content-Type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Recipe created.", "utf-8"))
-
+        self.handle201("Recipe created.")
     def handleUpdateRecipe(self, recipeID):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
@@ -95,31 +130,24 @@ class RequestHandler(BaseHTTPRequestHandler):
         if parsedBody.get("instructions") != None:
             instructions = parsedBody["instructions"][0]
         db.updateRecipe(recipeID, label, instructions)
-        self.send_response(201)
-        self.send_header("Content-Type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Recipe updated.", "utf-8"))
-
+        self.handle201("Recipe updated.")
     def handleListRecipes(self):
         db = GroceryDB()
         recipes = { "recipes" : db.getRecipes() }
-        jsonData = json.dumps(recipes)
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(bytes(jsonData, "utf-8"))
-
+        self.handle200JSONResponse(recipes)
     def handleRecipeRetrieve(self, recipeID):
         db = GroceryDB()
         if not db.recipeExists(recipeID):
             self.handle404("Recipe does not exist.")
         else:
             recipe = db.getRecipe(recipeID)
-            jsonData = json.dumps(recipe)
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(bytes(jsonData, "utf-8"))
+            self.handle200JSONResponse(recipe)
+    def handleDeleteRecipe(self, recipeID):
+        db = GroceryDB()
+        if not db.ingredientExists(recipeID):
+            self.handle404("Recipe does not exist.")
+        db.deleteRecipe(recipeID)
+        self.handle200("Recipe successfully deleted")
 
 # recipe_ingredients operations
     def handleAddRecipeIngredient(self):
@@ -143,11 +171,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
-            self.send_response(201)
-            self.send_header("Content-Type", "text/plain")
-            self.end_headers()
-            self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
-
+            self.handle201("Recipe ingredient added.")
     def handleUpdateRecipeIngredient(self):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
@@ -168,16 +192,44 @@ class RequestHandler(BaseHTTPRequestHandler):
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.updateRecipeIngredient(recipeID, ingredientID, quantity, quantityType)
-            self.send_response(201)
-            self.send_header("Content-Type", "text/plain")
-            self.end_headers()
-            self.wfile.write(bytes("Recipe ingredient updated.", "utf-8"))
+            self.handle201("Recipe ingredient updated.")
+    def handleDeleteRecipeIngredient(self):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        ingredientID = -1
+        recipeID = -1
+        if parsedBody.get("ingredient_id") != None:
+            ingredientID = parsedBody["ingredient_id"][0]
+        if parsedBody.get("recipe_id") != None:
+            recipeID = parsedBody["recipe_id"][0]
+        if not db.recipeIngredientExists(recipeID, ingredientID):
+            self.handle404("Recipe ingredient does not exist.")
+        else:
+            db.deleteRecipeIngredient(recipeID, ingredientID)
+            self.handle200("Recipe ingredient successfully deleted")
+
 # General Methods
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
         body = self.rfile.read(length).decode("utf-8")
         parsed_body = parse_qs(body)
         return parsed_body
+    def handle200(self, message):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes(message, "utf-8"))
+    def handle200JSONResponse(self, jsonString):
+        jsonData = json.dumps(jsonString)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(bytes(jsonData, "utf-8"))
+    def handle201(self, message):
+        self.send_response(201)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes(message, "utf-8"))
     def handle404(self, message):
         self.send_response(404)
         self.send_header("Content-Type", "text/plain")
@@ -203,14 +255,11 @@ class RequestHandler(BaseHTTPRequestHandler):
 def main():
     db = GroceryDB()
     db.createTables()
-
     port = 8080
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
-
     listen = ("0.0.0.0", port)
     server = HTTPServer(listen, RequestHandler)
-
     print("Listening...")
     server.serve_forever()
 main()
