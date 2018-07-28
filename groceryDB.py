@@ -37,9 +37,8 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS recipes
         (recipe_id serial primary key,
         label VARCHAR(255),
-        foreign_recipe_id INTEGER,
         foreign_ingredient_id INTEGER,
-        foreign key (foreign_recipe_id, foreign_ingredient_id) references recipe_ingredients(foreign_recipe_id, foreign_ingredient_id) on update cascade,
+        foreign key (recipe_id, foreign_ingredient_id) references recipe_ingredients (recipe_id, foreign_ingredient_id) on update cascade,
         instructions VARCHAR(255));
 
         CREATE TABLE IF NOT EXISTS grocery_list
@@ -73,6 +72,31 @@ class GroceryDB:
         self.cursor.execute(Query,(label, category, ingredientID))
         self.connection.commit()
     def deleteIngredient(self, ingredientID):
+        Query = "DELETE FROM ingredients WHERE ingredient_id = %s"
+        self.cursor.execute(Query, (ingredientID,))
+        self.connection.commit()
+# recipes operations
+    def createRecipe(self, label, ingredients, instructions):
+        queryString = "INSERT INTO recipes (label, instructions) VALUES (%s, %s)"
+        self.cursor.execute(queryString, (label, instructions))
+        self.connection.commit()
+    def addIngredientToRecipe(self, recipeID, ingredientID, quanity, quantityType):
+        pass
+    def getRecipes(self):
+        queryString = "SELECT * FROM recipes"
+        self.cursor.execute(queryString)
+        rows = self.cursor.fetchall()
+        return rows 
+    def getRecipe(self, ingredientID):
+        Query = "SELECT * FROM recipes WHERE recipe_id = %s"
+        self.cursor.execute(Query, (ingredientID,))
+        item = self.cursor.fetchall()
+        return item
+    def replaceRecipe(self, label, category, ingredientID):
+        Query = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
+        self.cursor.execute(Query,(label, category, ingredientID))
+        self.connection.commit()
+    def deleteRecipe(self, ingredientID):
         Query = "DELETE FROM ingredients WHERE ingredient_id = %s"
         self.cursor.execute(Query, (ingredientID,))
         self.connection.commit()
