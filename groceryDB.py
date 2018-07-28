@@ -27,7 +27,7 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS ingredients
         (ingredient_id serial primary key,
         label VARCHAR(255) not null,
-        catagory VARCHAR(255));
+        category VARCHAR(255));
 
         CREATE TABLE IF NOT EXISTS recipe_ingredients
         (foreign_recipe_id INTEGER not null,

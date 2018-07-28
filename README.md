@@ -22,7 +22,7 @@
 CREATE TABLE IF NOT EXISTS ingredients
 (ingredient_id serial primary key,
  label VARCHAR(255) not null,
- catagory VARCHAR(255));
+ category VARCHAR(255));
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients
 (foreign_recipe_id INTEGER not null,
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients
 CREATE TABLE IF NOT EXISTS recipes
 (recipe_id serial primary key,
  label VARCHAR(255),
- foreign_recipe_id INTEGER;
- foreign_ingredient_id INTEGER;
+ foreign_recipe_id INTEGER,
+ foreign_ingredient_id INTEGER,
  foreign key (foreign_recipe_id, foreign_ingredient_id) references recipe_ingredients(foreign_recipe_id, foreign_ingredient_id) on update cascade,
  instructions VARCHAR(255));
 
