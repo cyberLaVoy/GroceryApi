@@ -16,10 +16,14 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        pathParams = self.path.split('/')
         if self.path == "/ingredients":
             self.handleListIngredients()
         elif self.path == "/recipes":
             self.handleListRecipes()
+        elif len(pathParams) >= 3:
+            recipeID = pathParams[2]
+            self.handleRecipeRetrieve(recipeID)
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
@@ -74,6 +78,25 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes("Recipe created.", "utf-8"))
 
+    def handleListRecipes(self):
+        db = GroceryDB()
+        recipes = { "recipes" : db.getRecipes() }
+        jsonData = json.dumps(recipes)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(bytes(jsonData, "utf-8"))
+
+    def handleRecipeRetrieve(self, recipeID):
+        db = GroceryDB()
+        recipe = { "recipe" : db.getRecipe(recipeID) }
+        jsonData = json.dumps(recipe)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(bytes(jsonData, "utf-8"))
+
+# recipe_ingredients operations
     def handleAddRecipeIngredient(self, recipeID):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
@@ -96,15 +119,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/plain")
             self.end_headers()
             self.wfile.write(bytes("Recipe ingredient added.", "utf-8"))
-
-    def handleListRecipes(self):
-        db = GroceryDB()
-        ingredients = { "recipes" : db.getRecipes() }
-        jsonData = json.dumps(ingredients)
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(bytes(jsonData, "utf-8"))
 
 # General Methods
     def getParsedBody(self):
