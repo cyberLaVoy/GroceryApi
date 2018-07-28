@@ -25,7 +25,7 @@ class GroceryDB:
     def createTables(self):
         queryString = """
         CREATE TABLE IF NOT EXISTS ingredients
-        (ingredient_id serial primary key
+        (ingredient_id serial primary key,
         label VARCHAR(255) not null,
         catagory VARCHAR(255));
 
@@ -45,9 +45,9 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS grocery_list
         (list_id int,
         ingredient_id INTEGER references ingredients(ingredient_id),
-        recipe_id INTEGER references recipes(recipe_id)
+        recipe_id INTEGER references recipes(recipe_id),
         quantity REAL,
-        quantity_type VARCHAR(255)
+        quantity_type VARCHAR(255),
         grabbed BOOLEAN);
         """
         self.cursor.execute(queryString.replace('\n', ' '))
