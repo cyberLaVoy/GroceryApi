@@ -34,6 +34,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handleCreateIngredient()
         elif self.path == "/recipes":
             self.handleCreateRecipe()
+        elif self.path == "/groceries":
+            self.handleCreateGroceryList()
         elif self.path == "/recipes/ingredients":
             self.handleAddRecipeIngredient()
     def do_PUT(self):
@@ -264,7 +266,6 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 def main():
     db = GroceryDB()
-    db.deleteGroceryListTable()
     db.createTables()
     port = 8080
     if len(sys.argv) > 1:
