@@ -124,15 +124,18 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handleUpdateRecipe(self, recipeID):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
-        recipe = db.getRecipe(recipeID)
-        label = recipe["label"]
-        instructions = recipe["instructions"]
-        if parsedBody.get("label") != None:
-            label = parsedBody["label"][0]
-        if parsedBody.get("instructions") != None:
-            instructions = parsedBody["instructions"][0]
-        db.updateRecipe(recipeID, label, instructions)
-        self.handle201("Recipe updated.")
+        if not db.recipeExists(recipeID):
+            self.handle404("Recipe does not exist.")
+        else:
+            recipe = db.getRecipe(recipeID)
+            label = recipe["label"]
+            instructions = recipe["instructions"]
+            if parsedBody.get("label") != None:
+                label = parsedBody["label"][0]
+            if parsedBody.get("instructions") != None:
+                instructions = parsedBody["instructions"][0]
+            db.updateRecipe(recipeID, label, instructions)
+            self.handle201("Recipe updated.")
     def handleListRecipes(self):
         db = GroceryDB()
         recipes = { "recipes" : db.getRecipes() }
@@ -146,10 +149,11 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle200JSONResponse(recipe)
     def handleDeleteRecipe(self, recipeID):
         db = GroceryDB()
-        if not db.ingredientExists(recipeID):
+        if not db.recipeExists(recipeID):
             self.handle404("Recipe does not exist.")
-        db.deleteRecipe(recipeID)
-        self.handle200("Recipe successfully deleted")
+        else:
+            db.deleteRecipe(recipeID)
+            self.handle200("Recipe successfully deleted")
 
 # recipe_ingredients operations
     def handleAddRecipeIngredient(self):
@@ -230,6 +234,26 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             groceryList = db.getGroceryList(listID)
             self.handle200JSONResponse(groceryList)
+    def handleUpdateGroceryList(self, listID):
+        parsedBody = self.getParsedBody()
+        db = GroceryDB()
+        if not db.groceryListExists(listID):
+            self.handle404("Grocery list does not exist.")
+        else:
+            groceryList = db.getGroceryList(listID)
+            label = groceryList["label"]
+            if parsedBody.get("label") != None:
+                label = parsedBody["label"][0]
+            db.updateGroceryList(listID, label)
+            self.handle201("Grocery list updated.")
+    def handleDeleteGroceryList(self, listID):
+        db = GroceryDB()
+        if not db.groceryListExists(listID):
+            self.handle404("Grocery list does not exist.")
+        else:
+            db.deleteGroceryList(listID)
+            self.handle200("Grocery list successfully deleted")
+
 # grocery_list_items operations
     def handleAddGroceryListItem(self):
         db = GroceryDB()
