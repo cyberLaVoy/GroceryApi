@@ -48,6 +48,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
             self.handleUpdateRecipeIngredient()
+        elif self.path == "/groceries/items":
+            self.handleUpdateGroceryListItem()
         elif len(pathParams) >= 3:
             if pathParams[1] == "recipes":
                 recipeID = pathParams[2]
@@ -62,7 +64,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
             self.handleDeleteRecipeIngredient()
-        if len(pathParams) >= 3:
+        elif self.path == "/groceries/items":
+            self.handleDeleteGroceryListItem()
+        elif len(pathParams) >= 3:
             if pathParams[1] == "recipes":
                 recipeID = pathParams[2]
                 self.handleDeleteRecipe(recipeID)
@@ -297,6 +301,49 @@ class RequestHandler(BaseHTTPRequestHandler):
             ingredients = db.getRecipeIngredients(recipeID)
             db.addRecipeItemsToGroceryList(listID, ingredients)
             self.handle201("Recipe added to grocery list")
+    def handleUpdateGroceryListItem(self):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        ingredientID = -1
+        listID = -1
+        if parsedBody.get("ingredient_id") != None:
+            ingredientID = parsedBody["ingredient_id"][0]
+        if parsedBody.get("list_id") != None:
+            listID = parsedBody["list_id"][0]
+        if not db.groceryListItemExists(listID, ingredientID):
+            self.handle404("Grocery list item does not exist.")
+        else:
+            groceryListItem = db.getGroceryListItem(listID, ingredientID)
+            quantity = groceryListItem["quantity"]
+            quantityType = groceryListItem["quantity_type"]
+            grabbed = groceryListItem["grabbed"]
+            quantityUpdate = parsedBody.get("quantity") != None
+            quantityTypeUpdate = parsedBody.get("quantity_type") != None
+            if quantityUpdate:
+                quantity = parsedBody["quantity"][0]
+            if quantityTypeUpdate:
+                quantityType = parsedBody["quantity_type"][0]
+            if quantityUpdate or quantityTypeUpdate:
+                db.updateGroceryListItem(listID, ingredientID, quantity, quantityType)
+            if parsedBody.get("grabbed") != None:
+                grabbed = parsedBody["grabbed"][0]
+                db.setGroceryListItemGrabbed(grabbed, listID, ingredientID)
+            self.handle201("Grocery list item updated.")
+
+    def handleDeleteGroceryListItem(self):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        ingredientID = -1
+        listID = -1
+        if parsedBody.get("ingredient_id") != None:
+            ingredientID = parsedBody["ingredient_id"][0]
+        if parsedBody.get("list_id") != None:
+            listID = parsedBody["list_id"][0]
+        if not db.groceryListItemExists(listID, ingredientID):
+            self.handle404("Grocery list item does not exist.")
+        else:
+            db.deleteGroceryListItem(listID, ingredientID)
+            self.handle200("Grocery list item successfully deleted.")
 
 # General Methods
     def getParsedBody(self):

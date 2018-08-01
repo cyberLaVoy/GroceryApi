@@ -66,10 +66,12 @@ Replace | PUT | /ingredients/ingredientID | label, category
 Replace | PUT | /recipes/recipeID | label, instructions
 Replace | PUT | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
 Replace | PUT | /groceries/listID |
+Replace | PUT | /groceries/items | list_id, ingredient_id, quantity, quantity_type, grabbed
 Delete | DELETE | /recipes/ingredients | recipe_id, ingredient_id
 Delete | DELETE | /ingredients/ingredientID | 
 Delete | DELETE | /recipes/recipeID |
 Delete | DELETE | /groceries/listID |
+Delete | DELETE | /groceries/items | list_id, ingredient_id
 
 ## Heroku URL
 #### https://stormy-everglades-69504.herokuapp.com/ 
