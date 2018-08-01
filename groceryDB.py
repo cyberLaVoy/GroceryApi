@@ -44,7 +44,7 @@ class GroceryDB:
         label VARCHAR(255));
 
         CREATE TABLE IF NOT EXISTS grocery_list_items
-        (list_id INTEGER references grocery_list(list_id),
+        (list_id INTEGER references grocery_lists(list_id),
         ingredient_id INTEGER references ingredients(ingredient_id),
         quantity REAL,
         quantity_type VARCHAR(255),
