@@ -55,6 +55,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "ingredients":
                 ingredientID = pathParams[2]
                 self.handleUpdateIngredient(ingredientID)
+            elif pathParams[1] == "groceries":
+                listID = pathParams[2]
+                self.handleUpdateGroceryList(listID)
     def do_DELETE(self):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
@@ -66,6 +69,10 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "ingredients":
                 ingredientID = pathParams[2]
                 self.handleDeleteIngredient(ingredientID)
+            elif pathParams[1] == "groceries":
+                listID = pathParams[2]
+                self.handleDeleteGroceryList(listID)
+
 
 # ingredient operations
     def handleCreateIngredient(self):
