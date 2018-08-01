@@ -8,13 +8,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", self.headers["Origin"])
         self.send_header("Access-Control-Allow-Credentials", "true")
         BaseHTTPRequestHandler.end_headers(self)
-
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
-
     def do_GET(self):
         pathParams = self.path.split('/')
         if self.path == "/ingredients":
@@ -28,6 +26,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "recipes":
                 recipeID = pathParams[2]
                 self.handleRecipeRetrieve(recipeID)
+            elif pathParams[1] == "groceries":
+                listID = pathParams[2]
+                self.handleGroceryListRetrieve(listID)
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
@@ -46,7 +47,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "ingredients":
                 ingredientID = pathParams[2]
                 self.handleUpdateIngredient(ingredientID)
-
     def do_DELETE(self):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
@@ -101,7 +101,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         db.deleteIngredient(ingredientID)
         self.handle200("Ingredient successfully deleted")
 
-# recipe operations
+# recipes operations
     def handleCreateRecipe(self):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
@@ -202,6 +202,23 @@ class RequestHandler(BaseHTTPRequestHandler):
             db.deleteRecipeIngredient(recipeID, ingredientID)
             self.handle200("Recipe ingredient successfully deleted")
 
+# groceries operations
+    def handleCreateGroceryList(self):
+        parsedBody = self.getParsedBody()
+        db = GroceryDB()
+        label = "Grocery List Label"
+        if parsedBody.get("label") != None:
+            label = parsedBody["label"][0]
+        db.createGroceryList(label)
+        self.handle201("Grocery List created.")
+    def handleGroceryListRetrieve(self, listID):
+        db = GroceryDB()
+        if not db.groceryListExists(listID):
+            self.handle404("Grocery List does not exist.")
+        else:
+            groceryList = db.getGroceryList(listID)
+            self.handle200JSONResponse(groceryList)
+
 # General Methods
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
@@ -245,9 +262,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes("Not authorized.", "utf-8"))
 
-
 def main():
     db = GroceryDB()
+    db.deleteGroceryListTable()
     db.createTables()
     port = 8080
     if len(sys.argv) > 1:
