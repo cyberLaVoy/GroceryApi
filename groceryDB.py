@@ -160,10 +160,10 @@ class GroceryDB:
         self.cursor.execute(queryString, (label, instructions, recipeID))
         self.connection.commit()
     def deleteRecipe(self, recipeID):
+        self.deleteRecipeIngredients(recipeID)
         queryString = "DELETE FROM recipes WHERE recipe_id = %s"
         self.cursor.execute(queryString, (recipeID,))
         self.connection.commit()
-        self.deleteRecipeIngredients(recipeID)
 # groceries operations
     def appendItemsToGroceryLists(self, groceryLists):
         for groceryList in groceryLists:
@@ -202,10 +202,10 @@ class GroceryDB:
         self.cursor.execute(queryString, (label, listID))
         self.connection.commit()
     def deleteGroceryList(self, listID):
+        self.deleteGroceryListItems(listID)
         queryString = "DELETE FROM grocery_lists WHERE list_id = %s"
         self.cursor.execute(queryString, (listID,))
         self.connection.commit()
-        self.deleteGroceryListItems(listID)
 # grocery_list_items operations
     def groceryListItemExists(self, listID, ingredientID):
         queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s"
