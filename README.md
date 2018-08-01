@@ -15,7 +15,9 @@
 
 ### Grocery List
 ##### Attributes:
-* items
+* label (a name for the grocery list)
+* items (a list of items, with quantity and quantity type)
+
 
 ## Database Schema:
 ```SQL
@@ -56,7 +58,8 @@ Retrieve | GET | /recipes/recipeID |
 Retrieve | GET | /groceries/listID |
 Create | POST | /recipes | label, directions
 Create | POST | /ingredients | label, category
-Create | POST | /groceries |
+Create | POST | /groceries | label
+Create | POST | /groceries/items | list_id, ingredient_id, quantity, quantity_type
 Create | POST | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
 Replace | PUT | /ingredients/ingredientID | label, category
 Replace | PUT | /recipes/recipeID | label, instructions
