@@ -19,6 +19,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handleListIngredients()
         elif self.path == "/recipes":
             self.handleListRecipes()
+        elif self.path == "/groceries":
+            self.handleListGroceryLists()
         elif len(pathParams) >= 3:
             if pathParams[1] == "ingredients":
                 ingredientID = pathParams[2]
@@ -209,6 +211,10 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle200("Recipe ingredient successfully deleted")
 
 # groceries operations
+    def handleListGroceryLists(self):
+        db = GroceryDB()
+        groceryLists = { "grocery_lists" : db.getGroceryLists() }
+        self.handle200JSONResponse(groceryLists)
     def handleCreateGroceryList(self):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
@@ -260,6 +266,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             ingredients = db.getRecipeIngredients(recipeID)
             db.addRecipeItemsToGroceryList(listID, ingredients)
             self.handle201("Recipe added to grocery list")
+
 # General Methods
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
