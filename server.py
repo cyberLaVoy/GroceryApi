@@ -38,6 +38,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handleCreateGroceryList()
         elif self.path == "/groceries/items":
             self.handleAddGroceryListItem()
+        elif self.path == "/groceries/recipes":
+            self.handleAddRecipeToGroceryList()
         elif self.path == "/recipes/ingredients":
             self.handleAddRecipeIngredient()
     def do_PUT(self):
@@ -243,7 +245,21 @@ class RequestHandler(BaseHTTPRequestHandler):
                 quantityType = parsedBody["quantity_type"][0]
             db.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
             self.handle201("Item added to grocery list.")
-
+    def handleAddRecipeToGroceryList(self):
+        db = GroceryDB()
+        parsedBody = self.getParsedBody()
+        recipeID = -1
+        listID = -1
+        if parsedBody.get("recipe_id") != None:
+            recipeID = parsedBody["recipe_id"][0]
+        if parsedBody.get("list_id") != None:
+            listID = parsedBody["list_id"][0]
+        if not db.recipeExists(recipeID) or not db.groceryListExists(listID):
+            self.handle404("Recipe or grocery list does not exist.")
+        else:
+            ingredients = db.getRecipeIngredients(recipeID)
+            db.addRecipeItemsToGroceryList(listID, ingredients)
+            self.handle201("Recipe added to grocery list")
 # General Methods
     def getParsedBody(self):
         length = int(self.headers["Content-length"])

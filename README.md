@@ -60,6 +60,7 @@ Create | POST | /recipes | label, directions
 Create | POST | /ingredients | label, category
 Create | POST | /groceries | label
 Create | POST | /groceries/items | list_id, ingredient_id, quantity, quantity_type
+Create | POST | /groceries/recipes | list_id, recipe_id
 Create | POST | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
 Replace | PUT | /ingredients/ingredientID | label, category
 Replace | PUT | /recipes/recipeID | label, instructions
