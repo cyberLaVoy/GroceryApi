@@ -329,7 +329,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                 grabbed = parsedBody["grabbed"][0]
                 db.setGroceryListItemGrabbed(grabbed, listID, ingredientID)
             self.handle201("Grocery list item updated.")
-
     def handleDeleteGroceryListItem(self):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
