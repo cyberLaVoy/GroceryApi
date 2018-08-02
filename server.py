@@ -357,6 +357,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def isValidQuantityString(self, quantity):
         try:
             parts = quantity.strip().split() 
+            print(parts)
             if len(parts) > 2:
                 return False
             elif len(parts) == 2:
