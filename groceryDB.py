@@ -35,7 +35,7 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS recipe_ingredients
         (recipe_id INTEGER references recipes(recipe_id),
         ingredient_id INTEGER references ingredients(ingredient_id),
-        quantity REAL,
+        quantity VARCHAR(255),
         quantity_type VARCHAR(255),
         primary key (recipe_id, ingredient_id));
 
@@ -46,15 +46,24 @@ class GroceryDB:
         CREATE TABLE IF NOT EXISTS grocery_list_items
         (list_id INTEGER references grocery_lists(list_id),
         ingredient_id INTEGER references ingredients(ingredient_id),
-        quantity REAL,
+        quantity VARCHAR(255),
         quantity_type VARCHAR(255),
         num_recipes_referenced INTEGER DEFAULT 0,
-        grabbed BOOLEAN DEFAULT FALSE);
+        grabbed BOOLEAN DEFAULT FALSE
+        primary key (list_id, ingredient_id, quantity_type));
         """
         self.cursor.execute(queryString.replace('\n', ' '))
         self.connection.commit()
-    def deleteGroceryListTable(self):
+    def deleteGroceryListsTable(self):
         queryString = "DROP TABLE IF EXISTS grocery_lists;"
+        self.cursor.execute(queryString)
+        self.connection.commit()
+    def deleteGroceryListItemsTable(self):
+        queryString = "DROP TABLE IF EXISTS grocery_list_items;"
+        self.cursor.execute(queryString)
+        self.connection.commit()
+    def deleteRecipeIngredientsTable(self):
+        queryString = "DROP TABLE IF EXISTS recipe_ingredients;"
         self.cursor.execute(queryString)
         self.connection.commit()
 

@@ -389,6 +389,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 def main():
     db = GroceryDB()
+    db.deleteGroceryListItemsTable()
+    db.deleteRecipeIngredientsTable()
     db.createTables()
     port = 8080
     if len(sys.argv) > 1:
