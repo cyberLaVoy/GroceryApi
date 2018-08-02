@@ -379,8 +379,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         wholeNumber = total.numerator // denominator
         if wholeNumber != 0:
             numerator = total.numerator - denominator*wholeNumber
-            fraction = Fraction(numerator, denominator)
-            quantity = str(wholeNumber) + ' ' + str(fraction)
+            if numerator == 0:
+                quantity = str(wholeNumber)
+            else:
+                fraction = Fraction(numerator, denominator)
+                quantity = str(wholeNumber) + ' ' + str(fraction)
         return quantity
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
