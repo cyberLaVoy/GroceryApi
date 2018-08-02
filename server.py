@@ -360,10 +360,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             if len(parts) > 2:
                 return False
             elif len(parts) == 2:
-                int(parts[0])
-                if parts[1].count('/') != 1:
+                if not isinstance(parts[0], int):
                     return False
-            elif len(parts) == 1:
                 if parts[1].count('/') != 1:
                     return False
             for part in parts:
