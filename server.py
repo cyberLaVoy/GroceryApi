@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
+from fractions import Fraction
 from groceryDB import GroceryDB
 import json, sys
 
@@ -184,7 +185,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantity = ""
             quantityType = ""
             if parsedBody.get("quantity") != None:
-                quantity = parsedBody["quantity"][0]
+                tempQuantity = parsedBody["quantity"][0]
+                if self.isValidQuantityString(tempQuantity):
+                    quantity = self.parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
@@ -205,7 +208,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantity = recipeIngredient["quantity"]
             quantityType = recipeIngredient["quantity_type"]
             if parsedBody.get("quantity") != None:
-                quantity = parsedBody["quantity"][0]
+                tempQuantity = parsedBody["quantity"][0]
+                if self.isValidQuantityString(tempQuantity):
+                    quantity = self.parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.updateRecipeIngredient(recipeID, ingredientID, quantity, quantityType)
@@ -345,6 +350,23 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle200("Grocery list item successfully deleted.")
 
 # General Methods
+    def isValidQuantityString(self, quantity):
+        try:
+            parts = quantity.strip().split() 
+            for part in parts:
+                Fraction(part)
+            return True
+        except:
+            return False
+    def parseQuantityString(self, quantity):
+        try:
+            total = Fraction(0)
+            parts = quantity.strip().split() 
+            for part in parts:
+                total += Fraction(part)
+            return str(total)
+        except:
+            return False
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
         body = self.rfile.read(length).decode("utf-8")

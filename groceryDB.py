@@ -54,6 +54,7 @@ class GroceryDB:
         """
         self.cursor.execute(queryString.replace('\n', ' '))
         self.connection.commit()
+
     def deleteGroceryListsTable(self):
         queryString = "DROP TABLE IF EXISTS grocery_lists;"
         self.cursor.execute(queryString)
