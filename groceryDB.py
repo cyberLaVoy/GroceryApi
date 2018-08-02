@@ -49,7 +49,7 @@ class GroceryDB:
         quantity VARCHAR(255),
         quantity_type VARCHAR(255),
         num_recipes_referenced INTEGER DEFAULT 0,
-        grabbed BOOLEAN DEFAULT FALSE
+        grabbed BOOLEAN DEFAULT FALSE,
         primary key (list_id, ingredient_id, quantity_type));
         """
         self.cursor.execute(queryString.replace('\n', ' '))
