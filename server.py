@@ -367,7 +367,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             for part in parts:
                 Fraction(part)
             return True
-        except:
+        except Exception as e:
+            print(e)
             return False
     def parseQuantityString(self, quantity):
         total = Fraction(0)
