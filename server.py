@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
-from fractions import Fraction
 from groceryDB import GroceryDB
 import json, sys
+from datavalidation import parseQuantityString, isValidQuantityString
 
 class RequestHandler(BaseHTTPRequestHandler):
     def end_headers(self):
@@ -195,8 +195,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantityType = ""
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
-                if self.isValidQuantityString(tempQuantity):
-                    quantity = self.parseQuantityString(tempQuantity)
+                if isValidQuantityString(tempQuantity):
+                    quantity = parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.addIngredientToRecipe(recipeID, ingredientID, quantity, quantityType)
@@ -218,8 +218,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantityType = recipeIngredient["quantity_type"]
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
-                if self.isValidQuantityString(tempQuantity):
-                    quantity = self.parseQuantityString(tempQuantity)
+                if isValidQuantityString(tempQuantity):
+                    quantity = parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.updateRecipeIngredient(recipeID, ingredientID, quantity, quantityType)
@@ -296,8 +296,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantityType = "none"
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
-                if self.isValidQuantityString(tempQuantity):
-                    quantity = self.parseQuantityString(tempQuantity)
+                if isValidQuantityString(tempQuantity):
+                    quantity = parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
             db.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
@@ -340,8 +340,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             quantityTypeUpdate = parsedBody.get("quantity_type") != None
             if quantityUpdate:
                 tempQuantity = parsedBody["quantity"][0]
-                if self.isValidQuantityString(tempQuantity):
-                    quantity = self.parseQuantityString(tempQuantity)
+                if isValidQuantityString(tempQuantity):
+                    quantity = parseQuantityString(tempQuantity)
             if quantityTypeUpdate:
                 quantityType = parsedBody["quantity_type"][0]
             if quantityUpdate or quantityTypeUpdate:
@@ -369,37 +369,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle200("Grocery list item successfully deleted.")
 
 # General Methods
-    def isValidQuantityString(self, quantity):
-        try:
-            parts = quantity.strip().split() 
-            if len(parts) > 2:
-                return False
-            elif len(parts) == 2:
-                int(parts[0])
-                if parts[1].count('/') != 1:
-                    return False
-            for part in parts:
-                Fraction(part)
-            return True
-        except Exception as e:
-            print(e)
-            return False
-    def parseQuantityString(self, quantity):
-        total = Fraction(0)
-        parts = quantity.strip().split() 
-        for part in parts:
-            total += Fraction(part)
-        quantity = str(total)
-        denominator = total.denominator
-        wholeNumber = total.numerator // denominator
-        if wholeNumber != 0:
-            numerator = total.numerator - denominator*wholeNumber
-            if numerator == 0:
-                quantity = str(wholeNumber)
-            else:
-                fraction = Fraction(numerator, denominator)
-                quantity = str(wholeNumber) + ' ' + str(fraction)
-        return quantity
     def getParsedBody(self):
         length = int(self.headers["Content-length"])
         body = self.rfile.read(length).decode("utf-8")

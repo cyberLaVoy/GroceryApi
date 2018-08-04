@@ -2,6 +2,7 @@ import os
 import psycopg2
 import psycopg2.extras
 import urllib.parse
+from datavalidation import addQuantityStrings
 
 class GroceryDB:
     def __init__(self):
@@ -227,8 +228,8 @@ class GroceryDB:
     def addItemToGroceryList(self, listID, ingredientID, quantity, quantityType, fromRecipe = False):
         if self.groceryListItemExists(listID, ingredientID, quantityType):
             item = self.getGroceryListItem(listID, ingredientID, quantityType)
-            quantity += item["quantity"]
-            self.updateGroceryListItem(listID, ingredientID, quantity, quantityType)
+            newQuantity = addQuantityStrings(quantity, item["quantity"])
+            self.updateGroceryListItem(listID, ingredientID, newQuantity, quantityType)
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
         else:
