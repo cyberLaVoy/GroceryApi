@@ -192,7 +192,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle422("Recipe ingredient already exists.")
         else:
             quantity = 1
-            quantityType = ""
+            quantityType = "none"
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
                 if isValidQuantityString(tempQuantity):
