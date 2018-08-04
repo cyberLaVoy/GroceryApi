@@ -32,19 +32,24 @@ label VARCHAR(255),
 instructions VARCHAR(255));
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients
-(recipe_id INTEGER not null,
-ingredient_id INTEGER not null,
-quantity REAL,
+(recipe_id INTEGER references recipes(recipe_id),
+ingredient_id INTEGER references ingredients(ingredient_id),
+quantity VARCHAR(255),
 quantity_type VARCHAR(255),
 primary key (recipe_id, ingredient_id));
 
-CREATE TABLE IF NOT EXISTS grocery_list
-(list_id int,
+CREATE TABLE IF NOT EXISTS grocery_lists
+(list_id serial primary key,
+label VARCHAR(255));
+
+CREATE TABLE IF NOT EXISTS grocery_list_items
+(list_id INTEGER references grocery_lists(list_id),
 ingredient_id INTEGER references ingredients(ingredient_id),
-recipe_id INTEGER references recipes(recipe_id),
-quantity REAL,
+quantity VARCHAR(255),
 quantity_type VARCHAR(255),
-grabbed BOOLEAN);
+num_recipes_referenced INTEGER DEFAULT 0,
+grabbed BOOLEAN DEFAULT FALSE,
+primary key (list_id, ingredient_id, quantity_type));
 ```
 
 ## REST Endpoints:
