@@ -219,7 +219,7 @@ class GroceryDB:
         self.connection.commit()
 # grocery_list_items operations
     def groceryListItemExists(self, listID, ingredientID, quantityType):
-        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantityType = %s"
+        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
         self.cursor.execute(queryString,(listID, ingredientID, quantityType))
         rows = self.cursor.fetchall()
         if len(rows) == 0:
