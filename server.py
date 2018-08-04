@@ -93,7 +93,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
         label = "Ingredient Label"
-        category = "Ingredient Category"
+        category = "Misc."
         if parsedBody.get("label") != None:
             label = parsedBody["label"][0]
         if parsedBody.get("category") != None:

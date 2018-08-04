@@ -53,7 +53,7 @@ primary key (list_id, ingredient_id, quantity_type));
 ```
 
 ## REST Endpoints:
-Name | HTTP Method | Path | Request Body (x-www-form-urlencoded) *denotes required
+Name | HTTP Method | Path | Request Body (x-www-form-urlencoded) *denotes required, other paramerters are optional
 ------------ | ------------- | ------------- | -------------
 List | GET | /ingredients |
 List | GET | /recipes |
