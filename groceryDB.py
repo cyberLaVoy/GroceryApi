@@ -224,16 +224,26 @@ class GroceryDB:
         if len(rows) == 0:
             return False
         return True
-    def addItemToGroceryList(self, listID, ingredientID, quantity, quantityType):
-        queryString = "INSERT INTO grocery_list_items (list_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
-        self.cursor.execute(queryString, (listID, ingredientID, quantity, quantityType))
-        self.connection.commit()
+    def addItemToGroceryList(self, listID, ingredientID, quantity, quantityType, fromRecipe = False):
+        if self.groceryListItemExists(listID, ingredientID, quantityType):
+            item = self.getGroceryListItem(listID, ingredientID, quantityType)
+            quantity += item["quantity"]
+            self.updateGroceryListItem(listID, ingredientID, quantity, quantityType)
+            if fromRecipe:
+                self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
+        else:
+            queryString = "INSERT INTO grocery_list_items (list_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
+            self.cursor.execute(queryString, (listID, ingredientID, quantity, quantityType))
+            self.connection.commit()
+            if fromRecipe:
+                self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
     def addRecipeItemsToGroceryList(self, listID, items): # items is a list of ingredient objects
         for item in items:
             ingredientID = item["ingredient_id"]
             quantity = item["quantity"]
             quantityType = item["quantity_type"]
-            self.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
+            fromRecipe = True
+            self.addItemToGroceryList(listID, ingredientID, quantity, quantityType, fromRecipe)
     def getGroceryListItem(self, listID, ingredientID, quantityType):
         queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
         self.cursor.execute(queryString,(listID,ingredientID,quantityType))
