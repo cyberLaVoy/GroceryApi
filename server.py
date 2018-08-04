@@ -32,6 +32,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "groceries":
                 listID = pathParams[2]
                 self.handleGroceryListRetrieve(listID)
+        else:
+            self.handle404("Resource not found.")
     def do_POST(self):
         if self.path == "/ingredients":
             self.handleCreateIngredient()
@@ -45,6 +47,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handleAddRecipeToGroceryList()
         elif self.path == "/recipes/ingredients":
             self.handleAddRecipeIngredient()
+        else:
+            self.handle404("Resource not found.")
     def do_PUT(self):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
@@ -61,6 +65,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "groceries":
                 listID = pathParams[2]
                 self.handleUpdateGroceryList(listID)
+        else:
+            self.handle404("Resource not found.")
     def do_DELETE(self):
         pathParams = self.path.split('/')
         if self.path == "/recipes/ingredients":
@@ -77,6 +83,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif pathParams[1] == "groceries":
                 listID = pathParams[2]
                 self.handleDeleteGroceryList(listID)
+        else:
+            self.handle404("Resource not found.")
+
 
 
 # ingredient operations
@@ -313,14 +322,17 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         ingredientID = -1
         listID = -1
+        quantityType = "none"
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if parsedBody.get("list_id") != None:
             listID = parsedBody["list_id"][0]
-        if not db.groceryListItemExists(listID, ingredientID):
+        if parsedBody.get("qantity_type") != None:
+            quantityType = parsedBody["quantity_type"][0]
+        if not db.groceryListItemExists(listID, ingredientID, quantityType):
             self.handle404("Grocery list item does not exist.")
         else:
-            groceryListItem = db.getGroceryListItem(listID, ingredientID)
+            groceryListItem = db.getGroceryListItem(listID, ingredientID, quantityType)
             quantity = groceryListItem["quantity"]
             quantityType = groceryListItem["quantity_type"]
             grabbed = groceryListItem["grabbed"]
@@ -336,21 +348,24 @@ class RequestHandler(BaseHTTPRequestHandler):
                 db.updateGroceryListItem(listID, ingredientID, quantity, quantityType)
             if parsedBody.get("grabbed") != None:
                 grabbed = parsedBody["grabbed"][0]
-                db.setGroceryListItemGrabbed(grabbed, listID, ingredientID)
+                db.setGroceryListItemGrabbed(grabbed, listID, ingredientID, quantityType)
             self.handle201("Grocery list item updated.")
     def handleDeleteGroceryListItem(self):
         db = GroceryDB()
         parsedBody = self.getParsedBody()
         ingredientID = -1
         listID = -1
+        quantityType = "none"
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if parsedBody.get("list_id") != None:
             listID = parsedBody["list_id"][0]
-        if not db.groceryListItemExists(listID, ingredientID):
+        if parsedBody.get("quantity_type") != None:
+            quantityType = parsedBody["quantity_type"][0]
+        if not db.groceryListItemExists(listID, ingredientID, quantityType):
             self.handle404("Grocery list item does not exist.")
         else:
-            db.deleteGroceryListItem(listID, ingredientID)
+            db.deleteGroceryListItem(listID, ingredientID, quantityType)
             self.handle200("Grocery list item successfully deleted.")
 
 # General Methods

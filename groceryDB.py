@@ -217,9 +217,9 @@ class GroceryDB:
         self.cursor.execute(queryString, (listID,))
         self.connection.commit()
 # grocery_list_items operations
-    def groceryListItemExists(self, listID, ingredientID):
-        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString,(listID, ingredientID))
+    def groceryListItemExists(self, listID, ingredientID, quantityType):
+        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantityType = %s"
+        self.cursor.execute(queryString,(listID, ingredientID, quantityType))
         rows = self.cursor.fetchall()
         if len(rows) == 0:
             return False
@@ -234,9 +234,9 @@ class GroceryDB:
             quantity = item["quantity"]
             quantityType = item["quantity_type"]
             self.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
-    def getGroceryListItem(self, listID, ingredientID):
-        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString,(listID,ingredientID))
+    def getGroceryListItem(self, listID, ingredientID, quantityType):
+        queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+        self.cursor.execute(queryString,(listID,ingredientID,quantityType))
         item = self.cursor.fetchall()
         return item[0]
     def getGroceryListItems(self, listID):
@@ -245,23 +245,23 @@ class GroceryDB:
         rows = self.cursor.fetchall()
         return rows
     def updateGroceryListItem(self, listID, ingredientID, quantity, quantityType):
-        queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString,(quantity, quantityType, listID, ingredientID))
+        queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+        self.cursor.execute(queryString,(quantity, quantityType, listID, ingredientID, quantityType))
         self.connection.commit()
-    def incrementGroceryListItemRecipesReferenced(self, listID, ingredientID):
-        item = self.getGroceryListItem(listID, ingredientID)
+    def incrementGroceryListItemRecipesReferenced(self, listID, ingredientID, quantityType):
+        item = self.getGroceryListItem(listID, ingredientID, quantityType)
         recipesReferenced = item["num_recipes_referenced"]
         recipesReferenced += 1
-        queryString = "UPDATE grocery_list_items SET num_recipes_referenced = %s WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString,(recipesReferenced, listID, ingredientID))
+        queryString = "UPDATE grocery_list_items SET num_recipes_referenced = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+        self.cursor.execute(queryString,(recipesReferenced, listID, ingredientID, quantityType))
         self.connection.commit()
-    def setGroceryListItemGrabbed(self, grabbed, listID, ingredientID):
-        queryString = "UPDATE grocery_list_items SET grabbed = %s WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString,(grabbed, listID, ingredientID))
+    def setGroceryListItemGrabbed(self, grabbed, listID, ingredientID, quantityType):
+        queryString = "UPDATE grocery_list_items SET grabbed = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+        self.cursor.execute(queryString,(grabbed, listID, ingredientID, quantityType))
         self.connection.commit()
-    def deleteGroceryListItem(self, listID, ingredientID):
-        queryString = "DELETE FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s"
-        self.cursor.execute(queryString, (listID, ingredientID))
+    def deleteGroceryListItem(self, listID, ingredientID, quantityType):
+        queryString = "DELETE FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+        self.cursor.execute(queryString, (listID, ingredientID, quantityType))
         self.connection.commit()
     def deleteGroceryListItems(self, listID):
         queryString = "DELETE FROM grocery_list_items WHERE list_id = %s"

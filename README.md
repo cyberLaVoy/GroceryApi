@@ -48,7 +48,7 @@ grabbed BOOLEAN);
 ```
 
 ## REST Endpoints:
-Name | HTTP Method | Path | Request Body (x-www-form-urlencoded)
+Name | HTTP Method | Path | Request Body (x-www-form-urlencoded) *denotes required
 ------------ | ------------- | ------------- | -------------
 List | GET | /ingredients |
 List | GET | /recipes |
@@ -58,20 +58,20 @@ Retrieve | GET | /recipes/recipeID |
 Retrieve | GET | /groceries/listID |
 Create | POST | /recipes | label, directions
 Create | POST | /ingredients | label, category
-Create | POST | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
+Create | POST | /recipes/ingredients | *recipe_id, *ingredient_id, quantity, quantity_type
 Create | POST | /groceries | label
-Create | POST | /groceries/items | list_id, ingredient_id, quantity, quantity_type
-Create | POST | /groceries/recipes | list_id, recipe_id
+Create | POST | /groceries/items | *list_id, *ingredient_id, *quantity_type, quantity
+Create | POST | /groceries/recipes | *list_id, *recipe_id
 Replace | PUT | /ingredients/ingredientID | label, category
 Replace | PUT | /recipes/recipeID | label, instructions
-Replace | PUT | /recipes/ingredients | recipe_id, ingredient_id, quantity, quantity_type
-Replace | PUT | /groceries/listID |
-Replace | PUT | /groceries/items | list_id, ingredient_id, quantity, quantity_type, grabbed
-Delete | DELETE | /recipes/ingredients | recipe_id, ingredient_id
+Replace | PUT | /recipes/ingredients | *recipe_id, *ingredient_id, quantity, quantity_type
+Replace | PUT | /groceries/listID | label
+Replace | PUT | /groceries/items | *list_id, *ingredient_id, *quantity_type, quantity, grabbed
+Delete | DELETE | /recipes/ingredients | *recipe_id, *ingredient_id
 Delete | DELETE | /ingredients/ingredientID | 
 Delete | DELETE | /recipes/recipeID |
 Delete | DELETE | /groceries/listID |
-Delete | DELETE | /groceries/items | list_id, ingredient_id
+Delete | DELETE | /groceries/items | *list_id, *ingredient_id, *quantity_type
 
 ## Heroku URL
 #### https://stormy-everglades-69504.herokuapp.com/ 
