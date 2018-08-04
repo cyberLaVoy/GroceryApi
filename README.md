@@ -71,7 +71,7 @@ Replace | PUT | /ingredients/ingredientID | label, category
 Replace | PUT | /recipes/recipeID | label, instructions
 Replace | PUT | /recipes/ingredients | *recipe_id, *ingredient_id, quantity, quantity_type
 Replace | PUT | /groceries/listID | label
-Replace | PUT | /groceries/items | *list_id, *ingredient_id, *quantity_type, quantity, grabbed
+Replace | PUT | /groceries/items | *list_id, *ingredient_id, *original_quantity_type, new_quantity_type, quantity, grabbed
 Delete | DELETE | /recipes/ingredients | *recipe_id, *ingredient_id
 Delete | DELETE | /ingredients/ingredientID | 
 Delete | DELETE | /recipes/recipeID |

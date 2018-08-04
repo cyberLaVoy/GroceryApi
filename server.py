@@ -322,33 +322,33 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         ingredientID = -1
         listID = -1
-        quantityType = "none"
+        originalQuantityType = "none"
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if parsedBody.get("list_id") != None:
             listID = parsedBody["list_id"][0]
-        if parsedBody.get("qantity_type") != None:
-            quantityType = parsedBody["quantity_type"][0]
-        if not db.groceryListItemExists(listID, ingredientID, quantityType):
+        if parsedBody.get("original_quantity_type") != None:
+            originalQuantityType = parsedBody["original_quantity_type"][0]
+        if not db.groceryListItemExists(listID, ingredientID, originalQuantityType):
             self.handle404("Grocery list item does not exist.")
         else:
-            groceryListItem = db.getGroceryListItem(listID, ingredientID, quantityType)
+            groceryListItem = db.getGroceryListItem(listID, ingredientID, originalQuantityType)
             quantity = groceryListItem["quantity"]
-            quantityType = groceryListItem["quantity_type"]
+            newQuantityType = groceryListItem["quantity_type"]
             grabbed = groceryListItem["grabbed"]
             quantityUpdate = parsedBody.get("quantity") != None
-            quantityTypeUpdate = parsedBody.get("quantity_type") != None
+            quantityTypeUpdate = parsedBody.get("new_quantity_type") != None
             if quantityUpdate:
                 tempQuantity = parsedBody["quantity"][0]
                 if isValidQuantityString(tempQuantity):
                     quantity = parseQuantityString(tempQuantity)
             if quantityTypeUpdate:
-                quantityType = parsedBody["quantity_type"][0]
+                newQuantityType = parsedBody["new_quantity_type"][0]
             if quantityUpdate or quantityTypeUpdate:
-                db.updateGroceryListItem(listID, ingredientID, quantity, quantityType)
+                db.updateGroceryListItem(listID, ingredientID, quantity, originalQuantityType, newQuantityType)
             if parsedBody.get("grabbed") != None:
                 grabbed = parsedBody["grabbed"][0]
-                db.setGroceryListItemGrabbed(grabbed, listID, ingredientID, quantityType)
+                db.setGroceryListItemGrabbed(grabbed, listID, ingredientID, originalQuantityType)
             self.handle201("Grocery list item updated.")
     def handleDeleteGroceryListItem(self):
         db = GroceryDB()

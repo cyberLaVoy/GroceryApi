@@ -229,7 +229,7 @@ class GroceryDB:
         if self.groceryListItemExists(listID, ingredientID, quantityType):
             item = self.getGroceryListItem(listID, ingredientID, quantityType)
             newQuantity = addQuantityStrings(quantity, item["quantity"])
-            self.updateGroceryListItem(listID, ingredientID, newQuantity, quantityType)
+            self.updateGroceryListItem(listID, ingredientID, newQuantity, quantityType, quantityType)
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
         else:
@@ -255,9 +255,9 @@ class GroceryDB:
         self.cursor.execute(queryString,(listID,))
         rows = self.cursor.fetchall()
         return rows
-    def updateGroceryListItem(self, listID, ingredientID, quantity, quantityType):
+    def updateGroceryListItem(self, listID, ingredientID, quantity, originalQuantityType, newQuantityType):
         queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
-        self.cursor.execute(queryString,(quantity, quantityType, listID, ingredientID, quantityType))
+        self.cursor.execute(queryString,(quantity, newQuantityType, listID, ingredientID, originalQuantityType))
         self.connection.commit()
     def incrementGroceryListItemRecipesReferenced(self, listID, ingredientID, quantityType):
         item = self.getGroceryListItem(listID, ingredientID, quantityType)
