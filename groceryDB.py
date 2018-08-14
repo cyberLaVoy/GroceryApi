@@ -74,6 +74,10 @@ class GroceryDB:
         queryString = "INSERT INTO ingredients (label, category) VALUES (%s, %s)"
         self.cursor.execute(queryString, (label, category))
         self.connection.commit()
+        queryString = "SELECT * FROM ingredients ORDER BY TIMESTAMP DESC LIMIT 1"
+        self.cursor.execute(queryString)
+        ingredient = self.cursor.fetchall()
+        return ingredient[0]
     def getIngredients(self):
         queryString = "SELECT * FROM ingredients"
         self.cursor.execute(queryString)

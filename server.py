@@ -98,8 +98,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             label = parsedBody["label"][0]
         if parsedBody.get("category") != None:
             category = parsedBody["category"][0]
-        db.createIngredient(label, category)
-        self.handle201("Ingredient created.")
+        ingredient = db.createIngredient(label, category)
+        self.handle201JSONResponse(ingredient)
     def handleListIngredients(self):
         db = GroceryDB()
         ingredients = { "ingredients" : db.getIngredients() }
@@ -390,6 +390,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/plain")
         self.end_headers()
         self.wfile.write(bytes(message, "utf-8"))
+    def handle201JSONResponse(self, jsonString):
+        jsonData = json.dumps(jsonString)
+        self.send_response(201)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(bytes(jsonData, "utf-8"))
     def handle404(self, message):
         self.send_response(404)
         self.send_header("Content-Type", "text/plain")
