@@ -192,7 +192,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle422("Recipe ingredient already exists.")
         else:
             quantity = "1"
-            quantityType = "none"
+            quantityType = ""
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
                 if isValidQuantityString(tempQuantity):
@@ -293,7 +293,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.handle404("Ingredient or grocery list does not exist.")
         else:
             quantity = "1"
-            quantityType = "none"
+            quantityType = ""
             if parsedBody.get("quantity") != None:
                 tempQuantity = parsedBody["quantity"][0]
                 if isValidQuantityString(tempQuantity):
@@ -322,7 +322,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         ingredientID = -1
         listID = -1
-        originalQuantityType = "none"
+        originalQuantityType = ""
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if parsedBody.get("list_id") != None:
@@ -355,7 +355,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         parsedBody = self.getParsedBody()
         ingredientID = -1
         listID = -1
-        quantityType = "none"
+        quantityType = ""
         if parsedBody.get("ingredient_id") != None:
             ingredientID = parsedBody["ingredient_id"][0]
         if parsedBody.get("list_id") != None:

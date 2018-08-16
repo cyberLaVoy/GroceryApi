@@ -248,7 +248,6 @@ class GroceryDB:
             self.connection.commit()
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
-        print(listID, ingredientID, quantityType)
         item = self.getGroceryListItem(listID, ingredientID, quantityType)
         return self.parseGroceryListItem(item)
     def addRecipeItemsToGroceryList(self, listID, items): # items is a list of ingredient objects
