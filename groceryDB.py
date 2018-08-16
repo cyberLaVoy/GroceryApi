@@ -222,6 +222,12 @@ class GroceryDB:
         self.cursor.execute(queryString, (listID,))
         self.connection.commit()
 # grocery_list_items operations
+    def parseGroceryListItem(self, item):
+        item.pop("list_id", None)
+        itemDetails = self.getIngredient(item["ingredient_id"])
+        item["label"] = itemDetails["label"]
+        item["category"] = itemDetails["category"]
+        return item
     def groceryListItemExists(self, listID, ingredientID, quantityType):
         queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
         self.cursor.execute(queryString,(listID, ingredientID, quantityType))
@@ -242,7 +248,8 @@ class GroceryDB:
             self.connection.commit()
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
-        return self.getGroceryListItem(listID, ingredientID, quantityType)
+        item = self.getGroceryListItem(listID, ingredientID, quantityType)
+        return self.parseGroceryListItem(item)
     def addRecipeItemsToGroceryList(self, listID, items): # items is a list of ingredient objects
         for item in items:
             ingredientID = item["ingredient_id"]
