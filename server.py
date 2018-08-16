@@ -300,8 +300,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                     quantity = parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
                 quantityType = parsedBody["quantity_type"][0]
-            db.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
-            self.handle201("Item added to grocery list.")
+            itemJsonString = db.addItemToGroceryList(listID, ingredientID, quantity, quantityType)
+            self.handle201JSONResponse(itemJsonString)
     def handleAddRecipeToGroceryList(self):
         db = GroceryDB()
         parsedBody = self.getParsedBody()

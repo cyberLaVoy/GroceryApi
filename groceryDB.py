@@ -236,12 +236,17 @@ class GroceryDB:
             self.updateGroceryListItem(listID, ingredientID, newQuantity, quantityType, quantityType)
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
+            return self.getGroceryListItem(listID, ingredientID, quantityType)
         else:
             queryString = "INSERT INTO grocery_list_items (list_id, ingredient_id, quantity, quantity_type) VALUES (%s, %s, %s, %s)"
             self.cursor.execute(queryString, (listID, ingredientID, quantity, quantityType))
             self.connection.commit()
             if fromRecipe:
                 self.incrementGroceryListItemRecipesReferenced(listID, ingredientID, quantityType)
+            queryString = "SELECT * FROM grocery_list_items ORDER BY ingredient_id DESC LIMIT 1"
+            self.cursor.execute(queryString)
+            ingredient = self.cursor.fetchall()
+            return ingredient[0]
     def addRecipeItemsToGroceryList(self, listID, items): # items is a list of ingredient objects
         for item in items:
             ingredientID = item["ingredient_id"]
