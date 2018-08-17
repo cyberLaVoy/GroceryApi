@@ -74,8 +74,8 @@ class GroceryDB:
         stringArray = ingredientString.split()
         formatedString = ""
         for string in stringArray: 
-            formatedString += string[0].upper() + string[1:].lower()
-        return formatedString
+            formatedString += string[0].upper() + string[1:].lower() + " "
+        return formatedString[0:len(formatedString)-1]
     def createIngredient(self, label, category):
         label = self.formatIngredientString(label)
         category = self.formatIngredientString(category)
