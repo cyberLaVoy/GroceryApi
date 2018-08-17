@@ -70,8 +70,15 @@ class GroceryDB:
         self.connection.commit()
 
 # ingredients operations
+    def formatIngredientString(self, ingredientString):
+        stringArray = ingredientString.split()
+        formatedString = ""
+        for string in stringArray: 
+            formatedString += string[0].upper() + string[1:].lower()
+        return formatedString
     def createIngredient(self, label, category):
-        category = category[0].upper() + category[1:].lower()
+        label = self.formatIngredientString(label)
+        category = self.formatIngredientString(category)
         queryString = "INSERT INTO ingredients (label, category) VALUES (%s, %s)"
         self.cursor.execute(queryString, (label, category))
         self.connection.commit()
@@ -90,7 +97,8 @@ class GroceryDB:
         ingredient = self.cursor.fetchall()
         return ingredient[0]
     def updateIngredient(self, label, category, ingredientID):
-        category = category[0].upper() + category[1:].lower()
+        label = self.formatIngredientString(label)
+        category = self.formatIngredientString(category)
         queryString = "UPDATE ingredients SET label = %s, category = %s WHERE ingredient_id = %s"
         self.cursor.execute(queryString,(label, category, ingredientID))
         self.connection.commit()
