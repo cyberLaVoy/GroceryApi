@@ -140,8 +140,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             label = parsedBody["label"][0]
         if parsedBody.get("instructions") != None:
             instructions = parsedBody["instructions"][0]
-        db.createRecipe(label, instructions)
-        self.handle201("Recipe created.")
+        recipeJson = db.createRecipe(label, instructions)
+        self.handle201JSONResponse(recipeJson)
     def handleUpdateRecipe(self, recipeID):
         parsedBody = self.getParsedBody()
         db = GroceryDB()
