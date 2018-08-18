@@ -261,8 +261,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         label = "Grocery List Label"
         if parsedBody.get("label") != None:
             label = parsedBody["label"][0]
-        db.createGroceryList(label)
-        self.handle201("Grocery List created.")
+        groceryList = db.createGroceryList(label)
+        self.handle201JSONResponse(groceryList)
     def handleGroceryListRetrieve(self, listID):
         db = GroceryDB()
         if not db.groceryListExists(listID):
