@@ -234,6 +234,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if parsedBody.get("recipe_id") != None:
             recipeID = parsedBody["recipe_id"][0]
         if not db.recipeIngredientExists(recipeID, ingredientID):
+            print(recipeID, ingredientID)
             self.handle404("Recipe ingredient does not exist.")
         else:
             db.deleteRecipeIngredient(recipeID, ingredientID)
