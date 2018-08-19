@@ -279,7 +279,7 @@ class GroceryDB:
         queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
         self.cursor.execute(queryString,(listID,ingredientID,quantityType))
         item = self.cursor.fetchall()
-        return item[0]
+        return self.parseGroceryListItem(item[0])
     def getGroceryListItems(self, listID):
         queryString = "SELECT * FROM grocery_list_items WHERE list_id = %s"
         self.cursor.execute(queryString,(listID,))
