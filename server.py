@@ -356,11 +356,12 @@ class RequestHandler(BaseHTTPRequestHandler):
             if quantityTypeUpdate:
                 newQuantityType = parsedBody["new_quantity_type"][0]
             if quantityUpdate or quantityTypeUpdate:
-                db.updateGroceryListItem(listID, ingredientID, quantity, originalQuantityType, newQuantityType)
+                item = db.updateGroceryListItem(listID, ingredientID, quantity, originalQuantityType, newQuantityType)
+                self.handle201JSONResponse(item)
             if parsedBody.get("grabbed") != None:
                 grabbed = parsedBody["grabbed"][0]
                 db.setGroceryListItemGrabbed(grabbed, listID, ingredientID, originalQuantityType)
-            self.handle201("Grocery list item updated.")
+                self.handle201("Grocery list item grabbed set.")
     def handleDeleteGroceryListItem(self, queryString):
         db = GroceryDB()
         parsedQs = parse_qs(queryString)
