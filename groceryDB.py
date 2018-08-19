@@ -304,6 +304,7 @@ class GroceryDB:
         self.cursor.execute(queryString,(recipesReferenced, listID, ingredientID, quantityType))
         self.connection.commit()
     def setGroceryListItemGrabbed(self, grabbed, listID, ingredientID, quantityType):
+        print(grabbed)
         queryString = "UPDATE grocery_list_items SET grabbed = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
         self.cursor.execute(queryString,(grabbed, listID, ingredientID, quantityType))
         self.connection.commit()
