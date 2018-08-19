@@ -226,7 +226,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if isValidQuantityString(tempQuantity):
                     quantity = parseQuantityString(tempQuantity)
             if parsedBody.get("quantity_type") != None:
-                quantityType = parsedBody["quantity_type"][0]
+                quantityType = parsedBody["quantity_type"][0].strip()
             db.updateRecipeIngredient(recipeID, ingredientID, quantity, quantityType)
             self.handle201("Recipe ingredient updated.")
     def handleDeleteRecipeIngredient(self, queryString):
@@ -354,7 +354,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if isValidQuantityString(tempQuantity):
                     quantity = parseQuantityString(tempQuantity)
             if quantityTypeUpdate:
-                newQuantityType = parsedBody["new_quantity_type"][0]
+                newQuantityType = parsedBody["new_quantity_type"][0].strip()
             if quantityUpdate or quantityTypeUpdate:
                 item = db.updateGroceryListItem(listID, ingredientID, quantity, originalQuantityType, newQuantityType)
                 self.handle201JSONResponse(item)
