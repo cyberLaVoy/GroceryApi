@@ -286,12 +286,14 @@ class GroceryDB:
         rows = self.cursor.fetchall()
         return rows
     def updateGroceryListItem(self, listID, ingredientID, quantity, originalQuantityType, newQuantityType):
+        print(originalQuantityType, newQuantityType)
         if self.groceryListItemExists(listID, ingredientID, newQuantityType) and originalQuantityType != newQuantityType:
             existingItem = self.getGroceryListItem(listID, ingredientID, newQuantityType)
             self.deleteGroceryListItem(listID, ingredientID, newQuantityType) # delete the previously existing item
+            numRecipesReferenced = existingItem['num_recipes_referenced']
             newQuantity = addQuantityStrings(quantity, existingItem["quantity"])
-            queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
-            self.cursor.execute(queryString, (newQuantity, newQuantityType, listID, ingredientID, originalQuantityType))
+            queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s, num_recipes_referenced = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
+            self.cursor.execute(queryString, (newQuantity, newQuantityType, numRecipesReferenced, listID, ingredientID, originalQuantityType))
         else:
             queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
             self.cursor.execute(queryString,(quantity, newQuantityType, listID, ingredientID, originalQuantityType))
