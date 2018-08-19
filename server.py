@@ -279,7 +279,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             groceryList = db.getGroceryList(listID)
             label = groceryList["label"]
             if parsedBody.get("label") != None:
-                label = parsedBody["label"][0]
+                label = parsedBody["label"][0].strip()
             db.updateGroceryList(listID, label)
             self.handle201("Grocery list updated.")
     def handleDeleteGroceryList(self, listID):
