@@ -299,8 +299,7 @@ class GroceryDB:
             queryString = "UPDATE grocery_list_items SET quantity = %s, quantity_type = %s WHERE list_id = %s AND ingredient_id = %s AND quantity_type = %s"
             self.cursor.execute(queryString,(quantity, newQuantityType, listID, ingredientID, originalQuantityType))
             self.connection.commit()
-        item = self.getGroceryListItem(listID, ingredientID, newQuantityType)
-        return item[0]
+        return self.getGroceryListItem(listID, ingredientID, newQuantityType)
     def incrementGroceryListItemRecipesReferenced(self, listID, ingredientID, quantityType):
         item = self.getGroceryListItem(listID, ingredientID, quantityType)
         recipesReferenced = item["num_recipes_referenced"]
