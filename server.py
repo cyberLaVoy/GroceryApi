@@ -157,9 +157,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             label = recipe["label"]
             instructions = recipe["instructions"]
             if parsedBody.get("label") != None:
-                label = parsedBody["label"][0]
+                label = parsedBody["label"][0].strip()
             if parsedBody.get("instructions") != None:
-                instructions = parsedBody["instructions"][0]
+                instructions = parsedBody["instructions"][0].strip()
             db.updateRecipe(recipeID, label, instructions)
             self.handle201("Recipe updated.")
     def handleListRecipes(self):
