@@ -74,7 +74,7 @@ class GroceryDB:
         queryString = "SELECT * FROM recipe_ingredients WHERE ingredient_id = %s"
         self.cursor.execute(queryString, (ingredientId,))
         recipeIngredients = self.cursor.fetchall()       
-        queryString = "SELECT * FROM grocery_list_ingredients WHERE ingredient_id = %s"
+        queryString = "SELECT * FROM grocery_list_items WHERE ingredient_id = %s"
         self.cursor.execute(queryString, (ingredientId,))
         groceryListIngredients = self.cursor.fetchall() 
         if len(recipeIngredients) != 0 and len(groceryListIngredients) != 0:
