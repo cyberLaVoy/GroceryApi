@@ -133,7 +133,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not db.ingredientExists(ingredientID):
             self.handle404("Ingredient does not exist.")
         elif db.ingredientReferencedByOtherTables(ingredientID):
-            self.handle422("Ingredient is referenced by other dependent tables")
+            self.handle204("Ingredient is referenced by other dependent tables")
         else:
             db.deleteIngredient(ingredientID)
             self.handle200("Ingredient successfully deleted")
@@ -418,6 +418,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(bytes(jsonData, "utf-8"))
+    def handle204(self, message):
+        self.send_response(204)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(bytes(message, "utf-8"))
     def handle404(self, message):
         self.send_response(404)
         self.send_header("Content-Type", "text/plain")
