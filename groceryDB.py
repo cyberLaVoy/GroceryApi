@@ -70,6 +70,17 @@ class GroceryDB:
         self.connection.commit()
 
 # ingredients operations
+    def ingredientReferencedByOtherTables(self, ingredientId):
+        queryString = "SELECT * FROM recipe_ingredients WHERE ingredient_id = %s"
+        self.cursor.execute(queryString)
+        recipeIngredients = self.cursor.fetchall()       
+        queryString = "SELECT * FROM grocery_list_ingredients WHERE ingredient_id = %s"
+        self.cursor.execute(queryString)
+        groceryListIngredients = self.cursor.fetchall() 
+        if len(recipeIngredients) == 0 and len(groceryListIngredients) == 0:
+            return True
+        else:
+            return False
     def formatIngredientString(self, ingredientString):
         stringArray = ingredientString.split()
         formatedString = ""
