@@ -132,8 +132,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         db = GroceryDB()
         if not db.ingredientExists(ingredientID):
             self.handle404("Ingredient does not exist.")
-        db.deleteIngredient(ingredientID)
-        self.handle200("Ingredient successfully deleted")
+        elif db.ingredientReferencedByOtherTables(ingredientID):
+            self.handle422("Ingredient is referenced by other dependent tables")
+        else:
+            db.deleteIngredient(ingredientID)
+            self.handle200("Ingredient successfully deleted")
 
 # recipes operations
     def handleCreateRecipe(self):
@@ -246,8 +249,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         if not db.recipeIngredientExists(recipeID, ingredientID):
             print(recipeID, ingredientID)
             self.handle404("Recipe ingredient does not exist.")
-        elif db.ingredientReferencedByOtherTables(ingredientID):
-            self.handle422("Ingredient is referenced by other dependent tables")
         else:
             db.deleteRecipeIngredient(recipeID, ingredientID)
             self.handle200("Recipe ingredient successfully deleted")
